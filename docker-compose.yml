@@ -1,0 +1,7 @@
+version: "3"
+services:
+  blueprint-nodejs-nestjs:
+    build: .
+    image: tblasche/blueprint-nodejs-nestjs:latest
+    ports:
+      - "3000:3000"

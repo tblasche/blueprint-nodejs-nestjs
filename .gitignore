@@ -1,0 +1,19 @@
+# OS
+.DS_Store
+
+# IDE
+/.idea/
+/.settings/
+/.vscode/
+*.iml
+.classpath
+.project
+
+# Build
+/coverage/
+/dist/
+/node_modules/
+
+# Logs
+*.log
+npm-debug.log*
