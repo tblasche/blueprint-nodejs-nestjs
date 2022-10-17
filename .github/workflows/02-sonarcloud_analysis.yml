@@ -28,6 +28,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
+            -Dsonar.organization=tblasche
+            -Dsonar.projectKey=tblasche_blueprint-nodejs-nestjs
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.sources=src/
             -Dsonar.coverage.exclusions=src/**/*.spec.ts,src/**/*.e2e-spec.ts
