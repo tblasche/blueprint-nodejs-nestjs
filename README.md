@@ -1,7 +1,8 @@
 # NestJS Service Blueprint
 ![Build Status](https://github.com/tblasche/blueprint-nodejs-nestjs/workflows/Build/badge.svg)
 ![License](https://img.shields.io/github/license/tblasche/blueprint-nodejs-nestjs)
-[![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=tblasche_blueprint-nodejs-nestjs&metric=coverage)](https://sonarcloud.io/dashboard?id=tblasche_blueprint-nodejs-nestjs)
+[![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=tblasche_blueprint-nodejs-nestjs&metric=coverage)](https://sonarcloud.io/summary/new_code?id=tblasche_blueprint-nodejs-nestjs)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=tblasche_blueprint-nodejs-nestjs&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=tblasche_blueprint-nodejs-nestjs)
 
 Blueprint of a NestJS Service with enterprise features like JSON logging, Swagger UI or Prometheus Metrics included.
 
@@ -15,6 +16,7 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
 * API Documentation: Swagger UI
 * Logging: Access and Application Logs in JSON format
 * CI/CD: GitHub Actions
+* Static Code Analysis via SonarCloud
 
 ## Quick Start
 * Install dependencies
