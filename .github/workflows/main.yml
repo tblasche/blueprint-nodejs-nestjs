@@ -56,10 +56,10 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: $DOCKER_IMAGE_NAME:${{ github.sha }}
+          tags: ${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
       - name: Build and push latest Docker image
         if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: $DOCKER_IMAGE_NAME:latest
+          tags: ${{ env.DOCKER_IMAGE_NAME }}:latest
