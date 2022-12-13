@@ -17,12 +17,12 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
 * CI/CD: GitHub Actions
 * Static Code Analysis via SonarCloud
 
-## Quick Start
+## Local Development
 * Install dependencies
   ```console
   $ npm install
   ```
-* Start application in dev mode and find API docs at http://localhost:3000/apidoc
+* Start application in dev mode and find API docs at `http://localhost:3000/apidoc`
   ```console
   $ npm run start:dev
   ```
@@ -34,10 +34,7 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
   ```console
   $ npm run test:cov
   ```
-* Build docker image and run via `docker compose`. Find API docs at http://localhost:3000/apidoc
+* Build docker image and run via `docker compose`. Find API docs at `http://localhost:3000/apidoc`
   ```console
   $ docker compose build && docker compose up
   ```
-
-## API Documentation
-Swagger UI is accessible via `/apidoc`

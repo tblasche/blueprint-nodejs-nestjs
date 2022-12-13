@@ -1,6 +1,6 @@
 name: Main
 
-on: [push, pull_request, workflow_dispatch]
+on: [push, workflow_dispatch]
 
 env:
   DOCKER_IMAGE_NAME: tblasche/blueprint-nodejs-nestjs
