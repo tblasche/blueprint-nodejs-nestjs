@@ -26,11 +26,11 @@
     "@nestjs/swagger": "6.1.4",
     "joi": "17.7.0",
     "nestjs-pino": "3.1.1",
-    "pino-http": "8.2.1",
+    "pino-http": "8.3.0",
     "prom-client": "14.1.0",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
-    "rxjs": "7.6.0"
+    "rxjs": "7.8.0"
   },
   "devDependencies": {
     "@nestjs/cli": "9.1.5",
@@ -38,7 +38,7 @@
     "@nestjs/testing": "9.2.1",
     "@types/hapi__joi": "17.1.8",
     "@types/jest": "^29.2.4",
-    "@types/node": "^18.11.15",
+    "@types/node": "^18.11.16",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
     "@typescript-eslint/parser": "^5.46.1",
     "eslint": "^8.29.0",
