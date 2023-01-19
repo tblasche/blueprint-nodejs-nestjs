@@ -1,5 +1,5 @@
 # NestJS Service Blueprint
-![Build Status](https://github.com/tblasche/blueprint-nodejs-nestjs/workflows/Build/badge.svg)
+![Build Status](https://github.com/tblasche/blueprint-nodejs-nestjs/actions/workflows/main.yml/badge.svg)
 ![License](https://img.shields.io/github/license/tblasche/blueprint-nodejs-nestjs)
 [![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=tblasche_blueprint-nodejs-nestjs&metric=coverage)](https://sonarcloud.io/summary/new_code?id=tblasche_blueprint-nodejs-nestjs)
 
@@ -37,4 +37,8 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
 * Build docker image and run via `docker compose`. Find API docs at `http://localhost:3000/apidoc`
   ```console
   $ docker compose build && docker compose up
+  ```
+* Check for outdated dependencies
+  ```console
+  $ npm outdated
   ```
