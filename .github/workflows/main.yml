@@ -1,6 +1,6 @@
-name: Build
+name: CI
 
-on: [push, workflow_dispatch]
+on: push
 
 env:
   DOCKER_IMAGE_NAME: tblasche/blueprint-nodejs-nestjs
