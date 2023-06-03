@@ -36,7 +36,7 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
   ```
 * Build docker image and run via `docker compose`. Find API docs at `http://localhost:3000/apidoc`
   ```console
-  $ docker compose build && docker compose up
+  $ docker compose up --build
   ```
 * Check for outdated dependencies
   ```console
