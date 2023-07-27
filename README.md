@@ -17,7 +17,7 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
 * CI/CD: GitHub Actions
 * Static Code Analysis via SonarCloud
 
-## Local Development
+## Quick Start
 * Install dependencies
   ```console
   $ npm install
