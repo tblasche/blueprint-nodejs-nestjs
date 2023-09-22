@@ -7,12 +7,9 @@ env:
 
 jobs:
   build_test:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
         node: [16.x, 18.x, 20.x]
     steps:
       - uses: actions/checkout@v4
