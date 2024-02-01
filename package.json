@@ -26,7 +26,7 @@
     "@nestjs/swagger": "7.1.17",
     "joi": "17.11.0",
     "nestjs-pino": "3.5.0",
-    "pino-http": "8.6.1",
+    "pino-http": "9.0.0",
     "prom-client": "15.1.0",
     "reflect-metadata": "0.1.13",
     "rimraf": "5.0.5",
