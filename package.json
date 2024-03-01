@@ -22,7 +22,7 @@
     "@nestjs/common": "10.3.0",
     "@nestjs/config": "3.1.1",
     "@nestjs/core": "10.3.0",
-    "@nestjs/platform-fastify": "10.3.0",
+    "@nestjs/platform-fastify": "10.3.3",
     "@nestjs/swagger": "7.1.17",
     "joi": "17.11.0",
     "nestjs-pino": "3.5.0",
