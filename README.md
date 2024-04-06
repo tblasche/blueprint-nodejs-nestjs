@@ -30,6 +30,10 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
   ```console
   $ npm run test
   ```
+* Run linting
+  ```console
+  $ npm run lint
+  ```
 * Generate Code Coverage Report. HTML Report can be found in `./coverage/lcov-report/index.html`
   ```console
   $ npm run test:cov
