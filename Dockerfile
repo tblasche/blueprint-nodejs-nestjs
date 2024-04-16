@@ -4,7 +4,7 @@ WORKDIR /app
 RUN npm install
 COPY . /app
 RUN npm run build
-RUN rm -rf node_modules && npm install --production
+RUN rm -rf node_modules && npm install --omit=dev
 
 FROM node:21-alpine
 WORKDIR /app
