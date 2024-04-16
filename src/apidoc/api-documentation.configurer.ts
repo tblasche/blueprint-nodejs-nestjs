@@ -15,7 +15,7 @@ export class ApiDocumentationConfigurer {
       app,
       SwaggerModule.createDocument(app, new DocumentBuilder()
         .setTitle(app.get(ConfigService).get<string>('APP_NAME'))
-        .setDescription(`<a href="${app.get(ConfigService).get<string>('APP_DOCUMENTATION_URL')}" target="_blank">Go to documentation</a>`)
+        .setDescription(app.get(ConfigService).get<string>('APP_DESCRIPTION'))
         .build()
       ),
       this.swaggerCustomOptions
