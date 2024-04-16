@@ -11,8 +11,8 @@ export class MetricsController {
   }
 
   @Header('Content-Type', PrometheusClient.register.contentType)
-  @Get('prometheus-metrics')
-  prometheusMetrics(): Promise<string> {
+  @Get('metrics')
+  metrics(): Promise<string> {
     return PrometheusClient.register.metrics();
   }
 }
