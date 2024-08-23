@@ -25,7 +25,6 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['error', { args: 'none' }],
     '@typescript-eslint/quotes': ['error', 'single'],
     'comma-dangle': ['error', 'never'],
-    'import/order': 'error',
     'semi': ['error', 'always'],
     'sort-imports': ['error', { ignoreDeclarationSort: true }]
   },

@@ -8,8 +8,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): any {
     const response = host.switchToHttp().getResponse<FastifyReply>();
     const request = host.switchToHttp().getRequest<FastifyRequest>();
-    const responseStatus = this
-      .getResponseStatus(exception);
+    const responseStatus = this.getResponseStatus(exception);
 
     if (!this.isHttpException(exception)) {
       this.logException(exception);
