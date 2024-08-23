@@ -67,5 +67,11 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "trailingComma": "none"
   }
 }

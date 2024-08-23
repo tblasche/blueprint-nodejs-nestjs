@@ -27,5 +27,5 @@ module.exports = {
     'comma-dangle': ['error', 'never'],
     'semi': ['error', 'always'],
     'sort-imports': ['error', { ignoreDeclarationSort: true }]
-  },
+  }
 };
