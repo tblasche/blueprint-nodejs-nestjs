@@ -49,6 +49,16 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
 
 ## How-To
 
+### Use logger
+```typescript
+import { Logger } from '@nestjs/common';
+
+@Injectable()
+export class FooBarService {
+  private readonly logger: Logger = new Logger(FooBarService.name);
+}
+```
+
 ### Add new configuration property
 
 1. Define new property in `src/app.config.ts` using `Joi`, e.g.
