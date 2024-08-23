@@ -46,3 +46,36 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
   ```console
   npm outdated
   ```
+
+## How-To
+
+### Add new configuration property
+
+1. Define new property in `src/app.config.ts` using `Joi`, e.g.
+```typescript
+export const appConfigValidationSchema = {
+  // ...
+  FANCY_STRING_PROPERTY: Joi.string().required().description('Short description of you fancy new property'),
+  // ...
+};
+```
+2. Add default value for the new property to `.env.dist`, e.g.
+```text
+FANCY_STRING_PROPERTY=LocalDummyValue
+```
+3. Use the new property within your code
+```typescript
+// 1) feature.module.ts
+import { ConfigService } from '@nestjs/config';
+
+@Module({
+  imports: [ConfigModule],
+  // ...
+})
+
+// 2) get ConfigService via constructor injection
+constructor(private configService: ConfigService) {}
+
+// 3) use it
+const fancyStringProperty = this.configService.get<string>('FANCY_STRING_PROPERTY');
+```
