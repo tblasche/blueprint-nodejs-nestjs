@@ -13,10 +13,12 @@ export class ApiDocumentationConfigurer {
     SwaggerModule.setup(
       'apidoc',
       app,
-      SwaggerModule.createDocument(app, new DocumentBuilder()
-        .setTitle(app.get(ConfigService).get<string>('APP_NAME'))
-        .setDescription(app.get(ConfigService).get<string>('APP_DESCRIPTION'))
-        .build()
+      SwaggerModule.createDocument(
+        app,
+        new DocumentBuilder()
+          .setTitle(app.get(ConfigService).get<string>('APP_NAME'))
+          .setDescription(app.get(ConfigService).get<string>('APP_DESCRIPTION'))
+          .build()
       ),
       this.swaggerCustomOptions
     );

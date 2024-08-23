@@ -19,12 +19,11 @@ describe('MetricsController (e2e)', () => {
   });
 
   it('should provide metrics', () => {
-    return app.inject({ method: 'GET', url: '/metrics' })
-      .then(result => {
-        expect(result.statusCode).toBe(200);
-        expect(result.headers['content-type']).toMatch(/^text\/plain; /);
-        expect(result.headers['content-type']).toContain('charset=utf-8');
-        expect(result.payload).toContain('nodejs_version_info');
-      });
+    return app.inject({ method: 'GET', url: '/metrics' }).then((result) => {
+      expect(result.statusCode).toBe(200);
+      expect(result.headers['content-type']).toMatch(/^text\/plain; /);
+      expect(result.headers['content-type']).toContain('charset=utf-8');
+      expect(result.payload).toContain('nodejs_version_info');
+    });
   });
 });

@@ -2,13 +2,13 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: 'tsconfig.json',
+    tsconfigRootDir: __dirname,
     sourceType: 'module'
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
     'plugin:@typescript-eslint/recommended',
-    'plugin:import/recommended',
-    'plugin:import/typescript'
+    'plugin:prettier/recommended'
   ],
   root: true,
   env: {
@@ -18,7 +18,9 @@ module.exports = {
   ignorePatterns: ['.eslintrc.js'],
   rules: {
     '@typescript-eslint/ban-ts-comment': ['error', { 'ts-ignore': 'allow-with-description' }],
+    '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': ['error', { allowArgumentsExplicitlyTypedAsAny: true }],
+    '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { args: 'none' }],
     '@typescript-eslint/quotes': ['error', 'single'],
@@ -26,5 +28,5 @@ module.exports = {
     'import/order': 'error',
     'semi': ['error', 'always'],
     'sort-imports': ['error', { ignoreDeclarationSort: true }]
-  }
-}
+  },
+};

@@ -8,7 +8,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): any {
     const response = host.switchToHttp().getResponse<FastifyReply>();
     const request = host.switchToHttp().getRequest<FastifyRequest>();
-    const responseStatus = this.getResponseStatus(exception);
+    const responseStatus = this
+      .getResponseStatus(exception);
 
     if (!this.isHttpException(exception)) {
       this.logException(exception);
@@ -32,7 +33,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   private getErrorMessage(exception, httpStatus: HttpStatus): string {
     if (this.isHttpException(exception)) {
-      return (exception.message && exception.message.message) ? exception.message.message : exception.message;
+      return exception.message && exception.message.message ? exception.message.message : exception.message;
     }
 
     return HttpStatus[httpStatus];

@@ -8,12 +8,14 @@ import { ApiDocumentationConfigurer } from './apidoc/api-documentation.configure
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
-      AppModule,
-      new FastifyAdapter({
-        requestIdHeader: 'x-request-id',
-        genReqId: (req) => { return crypto.randomBytes(16).toString('hex'); }
-      }),
-      { bufferLogs: true }
+    AppModule,
+    new FastifyAdapter({
+      requestIdHeader: 'x-request-id',
+      genReqId: (req) => {
+        return crypto.randomBytes(16).toString('hex');
+      }
+    }),
+    { bufferLogs: true }
   );
   app.useLogger(app.get(Logger));
   ApiDocumentationConfigurer.configure(app);

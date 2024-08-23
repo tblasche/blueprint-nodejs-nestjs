@@ -19,18 +19,16 @@ describe('HealthController (e2e)', () => {
   });
 
   it('GET /alive should return 200 OK', () => {
-    return app.inject({ method: 'GET', url: '/alive' })
-      .then(result => {
-        expect(result.statusCode).toBe(200);
-        expect(result.payload).toBe('');
-      });
+    return app.inject({ method: 'GET', url: '/alive' }).then((result) => {
+      expect(result.statusCode).toBe(200);
+      expect(result.payload).toBe('');
+    });
   });
 
   it('GET /ready should return 200 OK', () => {
-    return app.inject({ method: 'GET', url: '/ready' })
-      .then(result => {
-        expect(result.statusCode).toBe(200);
-        expect(result.payload).toBe('');
-      });
+    return app.inject({ method: 'GET', url: '/ready' }).then((result) => {
+      expect(result.statusCode).toBe(200);
+      expect(result.payload).toBe('');
+    });
   });
 });
