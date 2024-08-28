@@ -50,6 +50,7 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
 ## How-To
 
 ### Use logger
+
 ```typescript
 import { Logger } from '@nestjs/common';
 
@@ -57,6 +58,22 @@ import { Logger } from '@nestjs/common';
 export class FooBarService {
   private readonly logger: Logger = new Logger(FooBarService.name);
 }
+```
+
+### Log errors properly
+
+With NestJS, there are a few possibilities, which deliver a good result:
+```typescript
+const e: Error; // either from try/catch or Promise.catch
+
+// log custom error message and error stack
+this.logger.error('Something bad happened', e.stack)
+
+// log error object with message, stack, cause etc.
+this.logger.error(e)
+
+// log custom error message and error object with message, stack, cause etc.
+this.logger.error(e, 'Something bad happened')
 ```
 
 ### Add new configuration property
