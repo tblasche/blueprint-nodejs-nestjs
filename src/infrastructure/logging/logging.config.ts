@@ -7,6 +7,7 @@ export function getLoggingConfig(config: ConfigService): Params {
     // @see https://github.com/pinojs/pino/blob/HEAD/docs/api.md#options
     // @see https://github.com/pinojs/pino-http
     pinoHttp: {
+      timestamp: pino.stdTimeFunctions.isoTime,
       level: config.get<string>('LOGGER_LEVEL'),
       formatters: {
         level: (level: string, number: number) => ({ level: level })
@@ -27,8 +28,14 @@ export function getLoggingConfig(config: ConfigService): Params {
           res.statusCode = res.raw.statusCode;
           return res;
         }),
-        // do not log error messages twice in error log and in access log (@see error/global-exception.filter.ts)
-        err: () => undefined
+        err: pino.stdSerializers.wrapErrorSerializer((err) => {
+          // prevent unnecessary err object in access logs
+          if (err.message.startsWith('failed with status code ')) {
+            return undefined;
+          }
+
+          return err;
+        })
       },
       // Set "base" to undefined to avoid adding "pid" and "hostname" properties to each log
       base: undefined

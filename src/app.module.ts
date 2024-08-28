@@ -4,8 +4,8 @@ import * as Joi from 'joi';
 import { APP_FILTER } from '@nestjs/core';
 import { LoggerModule, Params } from 'nestjs-pino';
 import { appConfigValidationSchema } from './app.config';
-import { GlobalExceptionFilter } from './error/global-exception.filter';
-import { getLoggingConfig } from './logging/logging.config';
+import { GlobalExceptionFilter } from './infrastructure/error/global-exception.filter';
+import { getLoggingConfig } from './infrastructure/logging/logging.config';
 import { HealthModule } from './health/health.module';
 import { MetricsModule } from './metrics/metrics.module';
 
