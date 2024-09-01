@@ -1,4 +1,12 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  BadRequestException,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+  Logger
+} from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 @Catch()
@@ -17,13 +25,15 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     response
       .code(responseStatus)
       .header('Content-Type', 'application/json; charset=utf-8')
-      .send({
-        error: {
-          status: responseStatus,
-          message: this.getErrorMessage(exception, responseStatus),
-          requestId: request.id
-        }
-      });
+      .send(
+        exception instanceof BadRequestException
+          ? Object.assign(exception.getResponse(), { requestId: request.id })
+          : {
+            statusCode: responseStatus,
+            error: this.getErrorMessage(exception, responseStatus),
+            requestId: request.id
+          }
+      );
   }
 
   private getResponseStatus(exception): number {
@@ -39,7 +49,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   }
 
   private logException(exception): void {
-    if (!!(exception as Error).message) {
+    if (exception && exception.message) {
       this.logger.error(exception.message, exception.stack);
     } else {
       this.logger.error(`Unhandled exception: ${exception}`);
