@@ -29,10 +29,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         exception instanceof BadRequestException
           ? Object.assign(exception.getResponse(), { requestId: request.id })
           : {
-            statusCode: responseStatus,
-            error: this.getErrorMessage(exception, responseStatus),
-            requestId: request.id
-          }
+              statusCode: responseStatus,
+              error: this.getErrorMessage(exception, responseStatus),
+              requestId: request.id
+            }
       );
   }
 

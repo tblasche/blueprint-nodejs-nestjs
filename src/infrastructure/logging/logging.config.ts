@@ -18,6 +18,11 @@ export function getLoggingConfig(config: ConfigService): Params {
             delete req.headers;
           }
 
+          // omit unnecessary empty query object to save some bytes with each access log
+          if (req.query && Object.keys(req.query).length === 0) {
+            delete req.query;
+          }
+
           return req;
         }),
         res: pino.stdSerializers.wrapResponseSerializer((res) => {

@@ -8,6 +8,7 @@ import { GlobalExceptionFilter } from './infrastructure/error/global-exception.f
 import { getLoggingConfig } from './infrastructure/logging/logging.config';
 import { HealthModule } from './health/health.module';
 import { MetricsModule } from './metrics/metrics.module';
+import { DemoModule } from './demo/demo.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MetricsModule } from './metrics/metrics.module';
         abortEarly: false
       }
     }),
+    DemoModule,
     HealthModule,
     LoggerModule.forRootAsync({
       inject: [ConfigService],
