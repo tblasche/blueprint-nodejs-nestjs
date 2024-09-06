@@ -1,19 +1,39 @@
-import crypto = require('crypto');
 import { Injectable } from '@nestjs/common';
-import { DemoDto } from './demo.dto';
 import { CreateDemoDto } from './create-demo.dto';
+import { PrismaService } from '../infrastructure/db/prisma.service';
+import { DemoDto } from './demo.dto';
+import { Demo } from '@prisma/client';
 
 @Injectable()
 export class DemoService {
-  private demos: DemoDto[] = [];
+  constructor(private readonly prismaService: PrismaService) {}
 
   getDemos(): Promise<DemoDto[]> {
-    return Promise.resolve(this.demos);
+    return this.prismaService.demo.findMany().then((entities: Demo[]) => this.demoEntitiesToDemoDtos(entities));
   }
 
   createDemo(createDemoDto: CreateDemoDto): Promise<DemoDto> {
-    const demoDto = new DemoDto(Object.assign({}, createDemoDto, { id: crypto.randomBytes(16).toString('hex') }));
-    this.demos.push(Object.assign({}, createDemoDto, { id: crypto.randomBytes(16).toString('hex') }));
-    return Promise.resolve(demoDto);
+    return this.prismaService.demo
+      .create({
+        data: {
+          title: createDemoDto.title,
+          description: createDemoDto.description
+        }
+      })
+      .then((entity: Demo) => this.demoEntityToDemoDto(entity));
+  }
+
+  private demoEntitiesToDemoDtos(entities: Demo[]): DemoDto[] {
+    return entities.map((entity) => this.demoEntityToDemoDto(entity));
+  }
+
+  private demoEntityToDemoDto(entity: Demo): DemoDto {
+    return new DemoDto({
+      id: entity.id,
+      title: entity.title,
+      description: entity.description,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt
+    });
   }
 }
