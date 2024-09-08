@@ -110,5 +110,8 @@ const fancyStringProperty = this.configService.get<string>('FANCY_STRING_PROPERT
 ### Change database schema
 
 1. Make your schema changes in `/prisma/schema.prisma`. See [Prisma Docs](https://www.prisma.io/docs/orm/prisma-schema/data-model/models)
-2. Generate migration scripts
-3. Update DB
+2. Run `npx prisma generate` to update locally generated Prisma Client
+3. Generate migration scripts in `/prisma/migrations/`
+    1. Start Postgres via Docker: `docker run --name postgres --rm -e POSTGRES_USER=user -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=blueprint -p 5432:5432 -it postgres:alpine`
+    2. Generate migrations: `DATABASE_URL=postgresql://user:pass@localhost:5432/blueprint?schema=public npx prisma migrate dev`
+4. Update DB
