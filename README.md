@@ -106,3 +106,9 @@ constructor(private configService: ConfigService) {}
 // 3) use it
 const fancyStringProperty = this.configService.get<string>('FANCY_STRING_PROPERTY');
 ```
+
+### Change database schema
+
+1. Make your schema changes in `/prisma/schema.prisma`. See [Prisma Docs](https://www.prisma.io/docs/orm/prisma-schema/data-model/models)
+2. Generate migration scripts
+3. Update DB
