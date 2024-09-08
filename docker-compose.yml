@@ -1,7 +1,17 @@
-version: "3"
 services:
   blueprint-nodejs-nestjs:
     build: .
     image: tblasche/blueprint-nodejs-nestjs:latest
     ports:
       - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://user:pass@postgres:5432/blueprint?schema=public
+  postgres:
+    image: postgres:alpine
+    restart: always
+    expose:
+      - 5432
+    environment:
+      POSTGRES_DB: blueprint
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
