@@ -6,6 +6,15 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: postgresql://user:pass@postgres:5432/blueprint?schema=public
+  migrate-db:
+    image: node:22-alpine
+    volumes:
+      - ./:/app
+    environment:
+      DATABASE_URL: postgresql://user:pass@postgres:5432/blueprint?schema=public
+    depends_on:
+      - postgres
+    entrypoint: [ "sh", "-c", "cd /app && npm install && npx prisma migrate dev"]
   postgres:
     image: postgres:alpine
     restart: always
@@ -15,3 +24,8 @@ services:
       POSTGRES_DB: blueprint
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d blueprint"]
+      interval: 2s
+      retries: 15
+      timeout: 2s
