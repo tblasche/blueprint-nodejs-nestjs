@@ -16,7 +16,7 @@ export class TestHelper {
   private static readonly defaultConfig: Options = {
     moduleImports: [AppModule],
     requestIdGenerator: (req) => 'request-id',
-    postgresImage: 'postgres:16-alpine'
+    postgresImage: 'postgres:alpine'
   };
 
   private static postgresContainer;
