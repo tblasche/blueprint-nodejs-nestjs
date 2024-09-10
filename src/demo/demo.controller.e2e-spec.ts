@@ -2,7 +2,6 @@ import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { TestHelper } from '../infrastructure/testing/test.helper';
 
 describe('DemoController (e2e)', () => {
-  jest.setTimeout(60000);
   let app: NestFastifyApplication;
 
   beforeAll(async () => {
