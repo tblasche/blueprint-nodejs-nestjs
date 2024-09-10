@@ -24,8 +24,14 @@ services:
       POSTGRES_DB: blueprint
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d blueprint"]
       interval: 2s
       retries: 15
       timeout: 2s
+
+volumes:
+  postgres_data:
+    name: postgres-db-data
