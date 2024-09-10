@@ -23,9 +23,12 @@ export class TestHelper {
 
   static async initApp(options: Partial<Options> = {}): Promise<NestFastifyApplication> {
     const opts = Object.assign({}, this.defaultConfig, options);
+    const pgUser = 'user';
+    const pgPassword = 'pass';
+    const pgDatabase = 'test_db';
     process.env.TESTCONTAINERS_HOST_OVERRIDE = '127.0.0.1';
     this.postgresContainer = await new GenericContainer(opts.postgresImage)
-      .withEnvironment({ POSTGRES_USER: 'user', POSTGRES_PASSWORD: 'pass', POSTGRES_DB: 'test_db' })
+      .withEnvironment({ POSTGRES_USER: pgUser, POSTGRES_PASSWORD: pgPassword, POSTGRES_DB: pgDatabase })
       .withExposedPorts(5432)
       .start();
 
@@ -38,7 +41,7 @@ export class TestHelper {
           const configService = new ConfigService();
           configService.set(
             'DATABASE_URL',
-            `postgres://user:pass@localhost:${this.postgresContainer.getMappedPort(5432)}/test_db`
+            `postgres://${pgUser}:${pgPassword}@localhost:${this.postgresContainer.getMappedPort(5432)}/${pgDatabase}`
           );
           return configService;
         }
