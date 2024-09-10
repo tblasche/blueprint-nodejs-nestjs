@@ -4,8 +4,7 @@ import { AppModule } from '../../app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GenericContainer } from 'testcontainers';
-import { PrismaService } from '../db/prisma.service';
-import * as fs from 'fs';
+import * as child_process from 'child_process';
 
 export type Options = {
   moduleImports: any[];
@@ -64,8 +63,6 @@ export class TestHelper {
   }
 
   private static async setupDatabase(app: NestFastifyApplication): Promise<void> {
-    await app
-      .get(PrismaService)
-      .$executeRawUnsafe(fs.readFileSync('./prisma/migrations/20240905203859_init/migration.sql', 'utf-8'));
+    child_process.execSync(`DATABASE_URL=${app.get(ConfigService).get<string>('DATABASE_URL')} npx prisma migrate dev`);
   }
 }
