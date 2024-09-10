@@ -88,30 +88,29 @@ export const appConfigValidationSchema = {
 ```
 2. Add default value for the new property to `.env.dist`, e.g.
 ```text
-FANCY_STRING_PROPERTY=LocalDummyValue
+FANCY_STRING_PROPERTY=value
 ```
 3. Use the new property within your code
 ```typescript
-// 1) feature.module.ts
+import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [ConfigModule],
-  // ...
+  providers: [ConfigModule]
 })
-
-// 2) get ConfigService via constructor injection
-constructor(private configService: ConfigService) {}
-
-// 3) use it
-const fancyStringProperty = this.configService.get<string>('FANCY_STRING_PROPERTY');
+export class ExampleModule {
+  constructor(private readonly configService: ConfigService) {
+    const stringProperty = this.configService.get<string>('FANCY_STRING_PROPERTY');
+  }
+}
 ```
 
 ### Change database schema
 
 1. Make your schema changes in `/prisma/schema.prisma`. See [Prisma Docs](https://www.prisma.io/docs/orm/prisma-schema/data-model/models)
-2. Run `npx prisma generate` to update locally generated Prisma Client
+2. Make sure you have Prisma installed via running `npm install`
 3. Generate migration scripts in `/prisma/migrations/`
-    1. Start Postgres via Docker: `docker run --name postgres --rm -e POSTGRES_USER=user -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=blueprint -p 5432:5432 -it postgres:alpine`
-    2. Generate migrations: `DATABASE_URL=postgresql://user:pass@localhost:5432/blueprint?schema=public npx prisma migrate dev`
-4. Update DB
+   1. Start local Postgres via Docker: `docker run --name postgres --rm -e POSTGRES_USER=user -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=blueprint -p 5432:5432 -it postgres:alpine`
+   2. Generate migrations: `DATABASE_URL=postgresql://user:pass@localhost:5432/blueprint npx prisma migrate dev`
+4. Commit the newly generated migration scripts in `/prisma/migrations/`
+5. Update DB on all environments via `npx prisma migrate deploy`

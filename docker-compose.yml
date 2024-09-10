@@ -3,7 +3,7 @@ services:
     build: .
     image: tblasche/blueprint-nodejs-nestjs:latest
     ports:
-      - "3000:3000"
+      - 3000:3000
     environment:
       DATABASE_URL: postgresql://user:pass@postgres:5432/blueprint?schema=public
   migrate-db:
