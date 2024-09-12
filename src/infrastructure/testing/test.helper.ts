@@ -2,13 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from '../../app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { GenericContainer } from 'testcontainers';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import * as child_process from 'child_process';
 
 export type Options = {
   moduleImports: any[];
   requestIdGenerator: (req) => string;
+  withDatabase: boolean;
   postgresImage: string;
 };
 
@@ -16,10 +17,9 @@ export class TestHelper {
   private static readonly defaultConfig: Options = {
     moduleImports: [AppModule],
     requestIdGenerator: (req) => 'request-id',
+    withDatabase: true,
     postgresImage: 'postgres:alpine'
   };
-
-  private static postgresContainer;
 
   static async initApp(options: Partial<Options> = {}): Promise<NestFastifyApplication> {
     const opts = Object.assign({}, this.defaultConfig, options);
@@ -27,13 +27,21 @@ export class TestHelper {
     const pgPassword = 'pass';
     const pgDatabase = 'test_db';
     process.env.TESTCONTAINERS_HOST_OVERRIDE = '127.0.0.1';
-    this.postgresContainer = await new GenericContainer(opts.postgresImage)
-      .withEnvironment({ POSTGRES_USER: pgUser, POSTGRES_PASSWORD: pgPassword, POSTGRES_DB: pgDatabase })
-      .withExposedPorts(5432)
-      .start();
+    const postgresContainer = opts.withDatabase
+      ? await new GenericContainer(opts.postgresImage)
+          .withEnvironment({ POSTGRES_USER: pgUser, POSTGRES_PASSWORD: pgPassword, POSTGRES_DB: pgDatabase })
+          .withExposedPorts(5432)
+          .start()
+      : null;
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: opts.moduleImports
+      imports: [...opts.moduleImports, ConfigModule],
+      providers: [
+        {
+          provide: 'E2E_TEST_POSTGRES_CONTAINER',
+          useValue: postgresContainer
+        }
+      ]
     })
       .overrideProvider(ConfigService)
       .useFactory({
@@ -41,7 +49,7 @@ export class TestHelper {
           const configService = new ConfigService();
           configService.set(
             'DATABASE_URL',
-            `postgres://${pgUser}:${pgPassword}@localhost:${this.postgresContainer.getMappedPort(5432)}/${pgDatabase}`
+            `postgres://${pgUser}:${pgPassword}@localhost:${postgresContainer ? postgresContainer.getMappedPort(5432) : '5432'}/${pgDatabase}`
           );
           return configService;
         }
@@ -54,15 +62,19 @@ export class TestHelper {
       })
     );
     app.useGlobalPipes(new ValidationPipe());
-    await this.setupDatabase(app);
+
+    if (opts.withDatabase) {
+      await this.setupDatabase(app);
+    }
+
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
     return app;
   }
 
   static async closeApp(app: NestFastifyApplication): Promise<void> {
+    await app.get<StartedTestContainer>('E2E_TEST_POSTGRES_CONTAINER')?.stop({ remove: true });
     await app.close();
-    await this.postgresContainer.stop({ remove: true });
   }
 
   private static async setupDatabase(app: NestFastifyApplication): Promise<void> {
