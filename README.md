@@ -5,17 +5,21 @@
 
 Blueprint of a NestJS Service with enterprise features like JSON logging, Swagger UI or Prometheus Metrics included.
 
-## Tech Info
-* Language: Typescript
-* Build System: npm
-* Containerization: Docker
-* Framework: NestJS with fastify
-* Testing: Jest
-* Metrics: Prometheus
-* API Documentation: Swagger UI
-* Logging: Access and Application Logs in JSON format
-* CI/CD: GitHub Actions
-* Static Code Analysis via SonarCloud
+## Tech
+![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+![Fastify](https://img.shields.io/badge/fastify-%23000000.svg?style=for-the-badge&logo=fastify&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
+
+The service...
+* is `docker`'ized
+* utilizes `Jest` and `Testcontainers` for unit and integration testing
+* uses `Prisma` ORM for database interaction
+* provides `Prometheus` metrics
+* provides `Swagger UI` and `OpenAPI Specification`
+* writes `access and application logs` in `JSON` format
+* utilizes `GitHub Actions` for CI/CD
+* performs static code analysis via `SonarCloud`
 
 ## Quick Start
 * Install dependencies
@@ -88,21 +92,29 @@ export const appConfigValidationSchema = {
 ```
 2. Add default value for the new property to `.env.dist`, e.g.
 ```text
-FANCY_STRING_PROPERTY=LocalDummyValue
+FANCY_STRING_PROPERTY=value
 ```
 3. Use the new property within your code
 ```typescript
-// 1) feature.module.ts
+import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [ConfigModule],
-  // ...
+  providers: [ConfigModule]
 })
-
-// 2) get ConfigService via constructor injection
-constructor(private configService: ConfigService) {}
-
-// 3) use it
-const fancyStringProperty = this.configService.get<string>('FANCY_STRING_PROPERTY');
+export class ExampleModule {
+  constructor(private readonly configService: ConfigService) {
+    const stringProperty = this.configService.get<string>('FANCY_STRING_PROPERTY');
+  }
+}
 ```
+
+### Change database schema
+
+1. Make your schema changes in `/prisma/schema.prisma`. See [Prisma Docs](https://www.prisma.io/docs/orm/prisma-schema/data-model/models)
+2. Make sure you have Prisma installed via running `npm install`
+3. Generate migration scripts in `/prisma/migrations/`
+   1. Start local Postgres via Docker: `docker run --name postgres --rm -e POSTGRES_USER=user -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=blueprint -p 5432:5432 -it postgres:alpine`
+   2. Generate migrations: `DATABASE_URL=postgresql://user:pass@localhost:5432/blueprint npx prisma migrate dev`
+4. Commit the newly generated migration scripts in `/prisma/migrations/`
+5. Update DB on all environments via `npx prisma migrate deploy`

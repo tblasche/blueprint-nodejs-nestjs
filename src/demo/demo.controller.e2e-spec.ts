@@ -9,7 +9,7 @@ describe('DemoController (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    await TestHelper.closeApp(app);
   });
 
   it('GET /api/demos should return 200 OK', () => {
@@ -32,9 +32,11 @@ describe('DemoController (e2e)', () => {
       .then((result) => {
         expect(result.statusCode).toBe(201);
         expect(result.json()).toStrictEqual({
-          id: expect.stringMatching(/^[a-f0-9]{32}$/),
+          id: expect.stringMatching(/^[a-f0-9-]{36}$/),
           title: 'demo',
-          description: 'desc'
+          description: 'desc',
+          createdAt: expect.stringMatching(/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$/),
+          updatedAt: expect.stringMatching(/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$/)
         });
       });
   });

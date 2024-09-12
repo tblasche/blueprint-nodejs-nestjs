@@ -11,5 +11,7 @@ export const appConfigValidationSchema = {
     .description('If enabled, request headers will be included in access logs'),
   LOGGER_LOG_RESPONSE_HEADERS: Joi.boolean()
     .required()
-    .description('If enabled, response headers will be included in access logs')
+    .description('If enabled, response headers will be included in access logs'),
+
+  DATABASE_URL: Joi.string().required().description('Database connection string')
 };
