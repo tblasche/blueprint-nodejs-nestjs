@@ -5,17 +5,21 @@
 
 Blueprint of a NestJS Service with enterprise features like JSON logging, Swagger UI or Prometheus Metrics included.
 
-## Tech Info
-* Language: Typescript
-* Build System: npm
-* Containerization: Docker
-* Framework: NestJS with fastify
-* Testing: Jest
-* Metrics: Prometheus
-* API Documentation: Swagger UI
-* Logging: Access and Application Logs in JSON format
-* CI/CD: GitHub Actions
-* Static Code Analysis via SonarCloud
+## Tech
+![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+![Fastify](https://img.shields.io/badge/fastify-%23000000.svg?style=for-the-badge&logo=fastify&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
+
+The service...
+* is `docker`'ized
+* utilizes `Jest` and `Testcontainers` for unit and integration testing
+* uses `Prisma` ORM for database interaction
+* provides `Prometheus` metrics
+* provides `Swagger UI` and `OpenAPI Specification`
+* writes `access and application logs` in `JSON` format
+* utilizes `GitHub Actions` for CI/CD
+* performs static code analysis via `SonarCloud`
 
 ## Quick Start
 * Install dependencies
