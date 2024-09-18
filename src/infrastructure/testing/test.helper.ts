@@ -3,7 +3,7 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { AppModule } from '../../app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { GenericContainer, StartedTestContainer } from 'testcontainers';
+import { GenericContainer, StartedTestContainer, Wait } from 'testcontainers';
 import * as child_process from 'child_process';
 
 export type Options = {
@@ -31,6 +31,7 @@ export class TestHelper {
       ? await new GenericContainer(opts.postgresImage)
           .withEnvironment({ POSTGRES_USER: pgUser, POSTGRES_PASSWORD: pgPassword, POSTGRES_DB: pgDatabase })
           .withExposedPorts(5432)
+          .withWaitStrategy(Wait.forLogMessage('database system is ready to accept connections'))
           .start()
       : null;
 
@@ -49,7 +50,7 @@ export class TestHelper {
           const configService = new ConfigService();
           configService.set(
             'DATABASE_URL',
-            `postgres://${pgUser}:${pgPassword}@localhost:${postgresContainer ? postgresContainer.getMappedPort(5432) : '5432'}/${pgDatabase}`
+            `postgres://${pgUser}:${pgPassword}@${postgresContainer ? postgresContainer.getHost() + ':' + postgresContainer.getMappedPort(5432) : 'localhost:5432'}/${pgDatabase}`
           );
           return configService;
         }
@@ -75,6 +76,12 @@ export class TestHelper {
   static async closeApp(app: NestFastifyApplication): Promise<void> {
     await app.get<StartedTestContainer>('E2E_TEST_POSTGRES_CONTAINER')?.stop({ remove: true });
     await app.close();
+  }
+
+  static async resetDatabase(app: NestFastifyApplication): Promise<void> {
+    child_process.execSync(
+      `DATABASE_URL=${app.get(ConfigService).get<string>('DATABASE_URL')} npx prisma migrate reset --force`
+    );
   }
 
   private static async setupDatabase(app: NestFastifyApplication): Promise<void> {
