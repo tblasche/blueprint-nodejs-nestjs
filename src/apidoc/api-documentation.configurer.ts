@@ -18,6 +18,7 @@ export class ApiDocumentationConfigurer {
         new DocumentBuilder()
           .setTitle(app.get(ConfigService).get<string>('APP_NAME'))
           .setDescription(app.get(ConfigService).get<string>('APP_DESCRIPTION'))
+          .addBasicAuth()
           .build()
       ),
       this.swaggerCustomOptions
