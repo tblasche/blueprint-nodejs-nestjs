@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { APP_FILTER } from '@nestjs/core';
 import { LoggerModule, Params } from 'nestjs-pino';
-import { appConfigValidationSchema } from './app.config';
+import { appConfigValidationSchema } from './app.config.validation-schema';
 import { GlobalExceptionFilter } from './infrastructure/error/global-exception.filter';
 import { getLoggingConfig } from './infrastructure/logging/logging.config';
 import { HealthModule } from './health/health.module';
