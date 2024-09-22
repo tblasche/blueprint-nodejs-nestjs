@@ -1,15 +1,15 @@
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { TestHelper } from '../infrastructure/testing/test.helper';
+import { E2eTestHelper } from '../infrastructure/testing/e2e-test.helper';
 
 describe('DemoController (e2e)', () => {
   let app: NestFastifyApplication;
 
   beforeAll(async () => {
-    app = await TestHelper.initApp();
+    app = await E2eTestHelper.initApp();
   });
 
   afterAll(async () => {
-    await TestHelper.closeApp(app);
+    await E2eTestHelper.closeApp(app);
   });
 
   it('GET /api/demos should return 200 OK', () => {

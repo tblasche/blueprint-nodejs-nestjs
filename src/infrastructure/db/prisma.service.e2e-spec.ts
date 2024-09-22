@@ -1,16 +1,16 @@
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { PrismaService } from './prisma.service';
-import { TestHelper } from '../testing/test.helper';
+import { E2eTestHelper } from '../testing/e2e-test.helper';
 
 describe('PrismaService (e2e)', () => {
   let app: NestFastifyApplication;
 
   beforeAll(async () => {
-    app = await TestHelper.initApp();
+    app = await E2eTestHelper.initApp();
   });
 
   afterAll(async () => {
-    await TestHelper.closeApp(app);
+    await E2eTestHelper.closeApp(app);
   });
 
   describe('isConnectedToDatabase()', () => {
@@ -20,13 +20,13 @@ describe('PrismaService (e2e)', () => {
 
     it('should return false when database is not connected', async () => {
       // given
-      const app = await TestHelper.initApp({ withDatabase: false });
+      const app = await E2eTestHelper.initApp({ withDatabase: false });
 
       // expect
       expect(await app.get(PrismaService).isConnectedToDatabase()).toBe(false);
 
       // cleanup
-      await TestHelper.closeApp(app);
+      await E2eTestHelper.closeApp(app);
     });
   });
 });

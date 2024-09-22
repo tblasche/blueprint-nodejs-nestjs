@@ -13,7 +13,7 @@ export type Options = {
   postgresImage: string;
 };
 
-export class TestHelper {
+export class E2eTestHelper {
   private static readonly defaultConfig: Options = {
     moduleImports: [AppModule],
     requestIdGenerator: (req) => 'request-id',
