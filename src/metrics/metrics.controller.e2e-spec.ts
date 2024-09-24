@@ -1,21 +1,16 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { MetricsModule } from './metrics.module';
+import { E2eTestHelper } from '../infrastructure/testing/e2e-test.helper';
 
 describe('MetricsController (e2e)', () => {
   let app: NestFastifyApplication;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [MetricsModule]
-    }).compile();
-
-    app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
-    await app.init();
+    app = await E2eTestHelper.initApp({ moduleImports: [MetricsModule], withDatabase: false });
   });
 
   afterAll(async () => {
-    await app.close();
+    await E2eTestHelper.closeApp(app);
   });
 
   it('should provide metrics', () => {

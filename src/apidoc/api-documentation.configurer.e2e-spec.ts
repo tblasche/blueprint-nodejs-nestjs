@@ -1,23 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { AppModule } from '../app.module';
-import { ApiDocumentationConfigurer } from './api-documentation.configurer';
+import { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { E2eTestHelper } from '../infrastructure/testing/e2e-test.helper';
 
 describe('ApiDocumentationConfigurer (e2e)', () => {
   let app: NestFastifyApplication;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule]
-    }).compile();
-
-    app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
-    ApiDocumentationConfigurer.configure(app);
-    await app.init();
+    app = await E2eTestHelper.initApp({ withDatabase: false, withSwaggerUi: true });
   });
 
   afterAll(async () => {
-    await app.close();
+    await E2eTestHelper.closeApp(app);
   });
 
   it('should set up Swagger UI', () => {
