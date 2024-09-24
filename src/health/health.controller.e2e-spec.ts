@@ -1,12 +1,11 @@
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { HealthModule } from './health.module';
 import { E2eTestHelper } from '../infrastructure/testing/e2e-test.helper';
 
 describe('HealthController (e2e)', () => {
   let app: NestFastifyApplication;
 
   beforeAll(async () => {
-    app = await E2eTestHelper.initApp({ moduleImports: [HealthModule] });
+    app = await E2eTestHelper.initApp();
   });
 
   afterAll(async () => {
@@ -30,7 +29,7 @@ describe('HealthController (e2e)', () => {
   });
 
   it('GET /ready should return 503 Service Unavailable with missing database connection', async () => {
-    const app = await E2eTestHelper.initApp({ moduleImports: [HealthModule], withDatabase: false });
+    const app = await E2eTestHelper.initApp({ withDatabase: false });
 
     return app
       .inject({ method: 'GET', url: '/ready' })

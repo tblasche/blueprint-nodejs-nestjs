@@ -2,14 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { AppModule } from '../../app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import * as child_process from 'child_process';
 import { ApiDocumentationConfigurer } from '../../apidoc/api-documentation.configurer';
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { PrismaService } from '../db/prisma.service';
 
 export type Options = {
-  moduleImports: any[];
   requestIdGenerator: (req) => string;
   withDatabase: boolean;
   postgresImage: string;
@@ -18,7 +17,6 @@ export type Options = {
 
 export class E2eTestHelper {
   private static readonly defaultConfig: Options = {
-    moduleImports: [AppModule],
     requestIdGenerator: (req) => 'request-id',
     withDatabase: true,
     postgresImage: 'postgres:alpine',
@@ -33,7 +31,7 @@ export class E2eTestHelper {
       : null;
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [...opts.moduleImports, ConfigModule],
+      imports: [AppModule],
       providers: [
         {
           provide: 'E2E_TEST_POSTGRES_CONTAINER',

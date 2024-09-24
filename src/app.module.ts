@@ -9,6 +9,7 @@ import { getLoggingConfig } from './infrastructure/logging/logging.config';
 import { HealthModule } from './health/health.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { DemoModule } from './demo/demo.module';
+import { InfrastructureModule } from './infrastructure/infrastructure.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { DemoModule } from './demo/demo.module';
         abortEarly: false
       }
     }),
+    InfrastructureModule,
     DemoModule,
     HealthModule,
     LoggerModule.forRootAsync({

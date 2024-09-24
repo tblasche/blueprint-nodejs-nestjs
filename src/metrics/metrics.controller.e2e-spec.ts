@@ -1,12 +1,11 @@
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { MetricsModule } from './metrics.module';
 import { E2eTestHelper } from '../infrastructure/testing/e2e-test.helper';
 
 describe('MetricsController (e2e)', () => {
   let app: NestFastifyApplication;
 
   beforeAll(async () => {
-    app = await E2eTestHelper.initApp({ moduleImports: [MetricsModule], withDatabase: false });
+    app = await E2eTestHelper.initApp({ withDatabase: false });
   });
 
   afterAll(async () => {
