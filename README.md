@@ -86,7 +86,7 @@ this.logger.error(e, 'Something bad happened')
    ```text
    ENV_PROPERTY_XY=42
    ```
-2. Define property validation rules in `src/app.config.ts` using `Joi`, e.g.
+2. Define property validation rules in `src/app.config.validation-schema.ts` using `Joi`, e.g.
    ```typescript
    export const appConfigValidationSchema = {
      // ...
