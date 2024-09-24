@@ -89,6 +89,10 @@ export class E2eTestHelper {
     await app.close();
   }
 
+  static async sleep(ms: number): Promise<void> {
+    await new Promise((resolve) => setTimeout(() => resolve(true), ms));
+  }
+
   static async resetDatabase(app: NestFastifyApplication): Promise<void> {
     try {
       child_process.execSync(
@@ -105,7 +109,7 @@ export class E2eTestHelper {
         break;
       }
 
-      await new Promise((resolve) => setTimeout(() => resolve(true), 500));
+      await this.sleep(500);
     }
 
     try {
