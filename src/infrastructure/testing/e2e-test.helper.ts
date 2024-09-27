@@ -7,6 +7,10 @@ import * as child_process from 'child_process';
 import { ApiDocumentationConfigurer } from '../../apidoc/api-documentation.configurer';
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql';
 import { PrismaService } from '../db/prisma.service';
+import * as process from 'process';
+import { Logger, LoggerModule, Params } from 'nestjs-pino';
+import { getLoggingConfig } from '../logging/logging.config';
+import MemoryStream = require('memorystream');
 
 export type Options = {
   requestIdGenerator: (req) => string;
@@ -29,13 +33,31 @@ export class E2eTestHelper {
     const postgresContainer: StartedPostgreSqlContainer | null = opts.withDatabase
       ? await new PostgreSqlContainer(opts.postgresImage).start()
       : null;
+    const logCapture: string[] = [];
+    const memoryStream = new MemoryStream();
+    memoryStream.on('data', (chunk) => logCapture.push(chunk.toString().trimEnd()));
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [
+        AppModule,
+        LoggerModule.forRootAsync({
+          inject: [ConfigService],
+          useFactory: (config: ConfigService): Params => {
+            const loggerConfig = getLoggingConfig(config);
+            // @ts-ignore Inject MemoryStream into config
+            loggerConfig.pinoHttp.stream = memoryStream;
+            return loggerConfig;
+          }
+        })
+      ],
       providers: [
         {
           provide: 'E2E_TEST_POSTGRES_CONTAINER',
           useValue: postgresContainer
+        },
+        {
+          provide: 'E2E_TEST_LOG_CAPTURE',
+          useValue: logCapture
         }
       ]
     })
@@ -64,6 +86,7 @@ export class E2eTestHelper {
         genReqId: opts.requestIdGenerator
       })
     );
+    app.useLogger(app.get(Logger));
     app.useGlobalPipes(new ValidationPipe());
 
     if (opts.withSwaggerUi) {
@@ -91,6 +114,10 @@ export class E2eTestHelper {
 
   static async sleep(ms: number): Promise<void> {
     await new Promise((resolve) => setTimeout(() => resolve(true), ms));
+  }
+
+  static getLastLogMessage(app: NestFastifyApplication): string | undefined {
+    return (app.get('E2E_TEST_LOG_CAPTURE') || []).at(-1);
   }
 
   static async resetDatabase(app: NestFastifyApplication): Promise<void> {
