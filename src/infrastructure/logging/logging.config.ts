@@ -33,7 +33,8 @@ export function getLoggingConfig(config: ConfigService): Params {
           };
 
           if (config.get<string>('LOGGER_LOG_RESPONSE_HEADERS') === 'true') {
-            resLogObj.headers = res.headers;
+            // @ts-ignore .getHeaders() does not exist and .headers works
+            resLogObj.headers = res.raw.headers;
           }
 
           return resLogObj;
