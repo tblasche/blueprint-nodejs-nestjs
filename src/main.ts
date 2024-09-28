@@ -12,7 +12,7 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({
       requestIdHeader: 'x-request-id',
-      genReqId: (req) => crypto.randomBytes(16).toString('hex')
+      genReqId: () => crypto.randomBytes(16).toString('hex')
     }),
     { bufferLogs: true }
   );
