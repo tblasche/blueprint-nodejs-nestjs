@@ -11,20 +11,23 @@ import * as process from 'process';
 import { Logger, LoggerModule, Params } from 'nestjs-pino';
 import { getLoggingConfig } from '../logging/logging.config';
 import MemoryStream = require('memorystream');
+import { loggerModule } from '../infrastructure.module';
 
 export type Options = {
   requestIdGenerator: (req) => string;
   withDatabase: boolean;
   postgresImage: string;
   withSwaggerUi: boolean;
+  customImports: any[];
 };
 
 export class E2eTestHelper {
   private static readonly defaultConfig: Options = {
-    requestIdGenerator: (req) => 'request-id',
+    requestIdGenerator: () => 'request-id',
     withDatabase: true,
     postgresImage: 'postgres:alpine',
-    withSwaggerUi: false
+    withSwaggerUi: false,
+    customImports: []
   };
 
   static async initApp(options: Partial<Options> = {}): Promise<NestFastifyApplication> {
@@ -38,18 +41,7 @@ export class E2eTestHelper {
     memoryStream.on('data', (chunk) => logCapture.push(chunk.toString().trimEnd()));
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        AppModule,
-        LoggerModule.forRootAsync({
-          inject: [ConfigService],
-          useFactory: (config: ConfigService): Params => {
-            const loggerConfig = getLoggingConfig(config);
-            // @ts-ignore Inject MemoryStream into config
-            loggerConfig.pinoHttp.stream = memoryStream;
-            return loggerConfig;
-          }
-        })
-      ],
+      imports: [...opts.customImports, AppModule],
       providers: [
         {
           provide: 'E2E_TEST_POSTGRES_CONTAINER',
@@ -61,6 +53,18 @@ export class E2eTestHelper {
         }
       ]
     })
+      .overrideModule(loggerModule)
+      .useModule(
+        LoggerModule.forRootAsync({
+          inject: [ConfigService],
+          useFactory: (config: ConfigService): Params => {
+            const loggingConfig = getLoggingConfig(config);
+            // @ts-ignore Inject MemoryStream into config
+            loggingConfig.pinoHttp.stream = memoryStream;
+            return loggingConfig;
+          }
+        })
+      )
       .overrideProvider(ConfigService)
       .useFactory({
         factory: () => {
@@ -116,8 +120,24 @@ export class E2eTestHelper {
     await new Promise((resolve) => setTimeout(() => resolve(true), ms));
   }
 
-  static getLastLogMessage(app: NestFastifyApplication): string | undefined {
-    return (app.get('E2E_TEST_LOG_CAPTURE') || []).at(-1);
+  static getLogMessages(app: NestFastifyApplication): string[] {
+    return Array.from(app.get('E2E_TEST_LOG_CAPTURE') || []);
+  }
+
+  static getLastLogMessage(app: NestFastifyApplication, match?: string): string | undefined {
+    const logs: string[] = this.getLogMessages(app);
+
+    if (match) {
+      for (const log of logs.reverse()) {
+        if (log.includes(match)) {
+          return log;
+        }
+      }
+
+      return undefined;
+    }
+
+    return logs.at(-1);
   }
 
   static async resetDatabase(app: NestFastifyApplication): Promise<void> {

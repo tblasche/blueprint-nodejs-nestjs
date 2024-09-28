@@ -8,6 +8,13 @@ import { appConfigValidationSchema } from '../app.config.validation-schema';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './error/global-exception.filter';
 
+// create instance of LoggerModule to be able to override it within tests
+// see https://github.com/nestjs/nest/issues/11967
+export const loggerModule = LoggerModule.forRootAsync({
+  inject: [ConfigService],
+  useFactory: (config: ConfigService): Params => getLoggingConfig(config)
+});
+
 @Global()
 @Module({
   imports: [
@@ -22,10 +29,7 @@ import { GlobalExceptionFilter } from './error/global-exception.filter';
         abortEarly: false
       }
     }),
-    LoggerModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService): Params => getLoggingConfig(config)
-    })
+    loggerModule
   ],
   providers: [
     ConfigService,
