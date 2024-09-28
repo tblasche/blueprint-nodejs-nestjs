@@ -9,9 +9,7 @@ export class HealthController {
   constructor(private readonly prismaService: PrismaService) {}
 
   @Get('alive')
-  alive(): void {
-    return;
-  }
+  alive(): void {}
 
   @Get('ready')
   ready(@Res() res: FastifyReply): void {
