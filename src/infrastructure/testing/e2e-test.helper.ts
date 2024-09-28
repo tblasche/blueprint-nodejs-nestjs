@@ -19,6 +19,7 @@ export type Options = {
   postgresImage: string;
   withSwaggerUi: boolean;
   customImports: any[];
+  config: Record<string, string>;
 };
 
 export class E2eTestHelper {
@@ -27,7 +28,8 @@ export class E2eTestHelper {
     withDatabase: true,
     postgresImage: 'postgres:alpine',
     withSwaggerUi: false,
-    customImports: []
+    customImports: [],
+    config: {}
   };
 
   static async initApp(options: Partial<Options> = {}): Promise<NestFastifyApplication> {
@@ -71,6 +73,7 @@ export class E2eTestHelper {
           const configService = new ConfigService();
           const pg = postgresContainer;
           const configOverrides = {
+            ...opts.config,
             DATABASE_URL: pg
               ? `postgres://${pg.getUsername()}:${pg.getPassword()}@${pg.getHost()}:${pg.getPort()}/${pg.getDatabase()}`
               : 'postgresql://unknown:unknown@localhost:5432/unknown'
