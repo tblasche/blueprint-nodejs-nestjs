@@ -40,7 +40,7 @@ export function getLoggingConfig(config: ConfigService): Params {
           return resLogObj;
         }),
         err: pino.stdSerializers.wrapErrorSerializer((err) => {
-          // prevent unnecessary err object in access logs for HttpException
+          // prevent err object in access logs
           if (err.message.startsWith('failed with status code ')) {
             return undefined;
           }
@@ -49,6 +49,11 @@ export function getLoggingConfig(config: ConfigService): Params {
             stack: err.stack
           };
         })
+      },
+      mixin(logObj) {
+        return {
+          type: logObj.hasOwnProperty('responseTime') ? 'access' : 'application'
+        };
       },
       redact: {
         paths: ['req.headers.authorization'],

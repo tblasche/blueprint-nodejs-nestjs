@@ -41,6 +41,7 @@ export class E2eTestHelper {
     const logCapture: string[] = [];
     const memoryStream = new MemoryStream();
     memoryStream.on('data', (chunk) => logCapture.push(chunk.toString().trimEnd()));
+    memoryStream.pipe(process.stdout, { end: false });
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [...opts.customImports, AppModule],
@@ -123,13 +124,25 @@ export class E2eTestHelper {
     await new Promise((resolve) => setTimeout(() => resolve(true), ms));
   }
 
-  static getLogMessages(app: NestFastifyApplication): string[] {
+  static getLogs(app: NestFastifyApplication): string[] {
     return Array.from(app.get('E2E_TEST_LOG_CAPTURE') || []);
   }
 
-  static getLastLogMessage(app: NestFastifyApplication, match?: string): string | undefined {
-    const logs: string[] = this.getLogMessages(app);
+  static getLastAccessLog(app: NestFastifyApplication, match?: string): string | undefined {
+    return this.getLastLogMessage(
+      this.getLogs(app).filter((message) => message.includes(',"type":"access",')),
+      match
+    );
+  }
 
+  static getLastApplicationLog(app: NestFastifyApplication, match?: string): string | undefined {
+    return this.getLastLogMessage(
+      this.getLogs(app).filter((message) => message.includes(',"type":"application",')),
+      match
+    );
+  }
+
+  private static getLastLogMessage(logs: string[], match: string): string | undefined {
     if (match) {
       for (const log of logs.reverse()) {
         if (log.includes(match)) {
