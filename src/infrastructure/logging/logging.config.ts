@@ -2,11 +2,12 @@ import { ConfigService } from '@nestjs/config';
 import * as pino from 'pino';
 import { Params } from 'nestjs-pino';
 import * as os from 'os';
+import { SerializedRequest } from 'pino';
 
 export function getLoggingConfig(config: ConfigService): Params {
   return {
     // @see https://github.com/pinojs/pino/blob/HEAD/docs/api.md#options
-    // @see https://github.com/pinojs/pino-http
+    // @see https://github.com/pinojs/pino-http#api
     pinoHttp: {
       timestamp: pino.stdTimeFunctions.isoTime,
       level: config.get<string>('LOGGER_LEVEL'),
@@ -14,11 +15,12 @@ export function getLoggingConfig(config: ConfigService): Params {
         level: (level: string, number: number) => ({ level: level })
       },
       serializers: {
-        req: pino.stdSerializers.wrapRequestSerializer((req) => {
+        req: pino.stdSerializers.wrapRequestSerializer((req: SerializedRequest) => {
           const reqLogObj: any = {
             id: req.raw.id,
             method: req.raw.method,
-            url: req.url
+            url: req.url,
+            remoteAddress: req.raw.socket.remoteAddress
           };
 
           if (config.get<string>('LOGGER_LOG_REQUEST_HEADERS') === 'true') {

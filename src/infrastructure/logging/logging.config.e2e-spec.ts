@@ -73,7 +73,7 @@ describe('LoggingConfig (e2e)', () => {
 
     // expect
     expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(app, '/access-log-200-ok'))).toBe(
-      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok"},"type":"access","res":{"statusCode":200},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
+      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok","remoteAddress":"127.0.0.1"},"type":"access","res":{"statusCode":200},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
     );
   });
 
@@ -83,7 +83,7 @@ describe('LoggingConfig (e2e)', () => {
 
     // expect
     expect(simplifyLogMessage(E2eTestHelper.getLastApplicationLog(app, 'INFO log message'))).toBe(
-      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/application-log-info"},"type":"application","context":"TestController","msg":"INFO log message"}'
+      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/application-log-info","remoteAddress":"127.0.0.1"},"type":"application","context":"TestController","msg":"INFO log message"}'
     );
   });
 
@@ -96,7 +96,7 @@ describe('LoggingConfig (e2e)', () => {
 
     // expect
     expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(appWithLogRequestHeaders, '/access-log-200-ok'))).toBe(
-      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok","headers":{"user-agent":"lightMyRequest","host":"localhost:80"}},"type":"access","res":{"statusCode":200},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
+      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok","remoteAddress":"127.0.0.1","headers":{"user-agent":"lightMyRequest","host":"localhost:80"}},"type":"access","res":{"statusCode":200},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
     );
   });
 
@@ -110,7 +110,7 @@ describe('LoggingConfig (e2e)', () => {
 
     // expect
     expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(appWithLogRequestHeaders, '/access-log-200-ok'))).toBe(
-      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok","headers":{"x-test":"test","authorization":"***","user-agent":"lightMyRequest","host":"localhost:80"}},"type":"access","res":{"statusCode":200},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
+      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok","remoteAddress":"127.0.0.1","headers":{"x-test":"test","authorization":"***","user-agent":"lightMyRequest","host":"localhost:80"}},"type":"access","res":{"statusCode":200},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
     );
   });
 
@@ -123,7 +123,7 @@ describe('LoggingConfig (e2e)', () => {
 
     // expect
     expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(appWithLogResponseHeaders, '/access-log-200-ok'))).toBe(
-      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok"},"type":"access","res":{"statusCode":200,"headers":{"cache-control":"no-store","content-length":"0"}},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
+      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok","remoteAddress":"127.0.0.1"},"type":"access","res":{"statusCode":200,"headers":{"cache-control":"no-store","content-length":"0"}},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
     );
   });
 
@@ -139,7 +139,7 @@ describe('LoggingConfig (e2e)', () => {
       simplifyLogMessage(E2eTestHelper.getLastApplicationLog(app, '"url":"/bad-request-exception"'))
     ).toBeUndefined();
     expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(app, '/bad-request-exception'))).toBe(
-      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/bad-request-exception"},"type":"access","res":{"statusCode":400},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
+      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/bad-request-exception","remoteAddress":"127.0.0.1"},"type":"access","res":{"statusCode":400},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
     );
   });
 
@@ -152,10 +152,10 @@ describe('LoggingConfig (e2e)', () => {
 
     // expect
     expect(simplifyLogMessage(E2eTestHelper.getLastApplicationLog(app, '/error'))).toBe(
-      '{"level":"error","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/error"},"type":"application","context":"GlobalExceptionFilter","err":{"stack":"STACKTRACE"},"msg":"Error Message!"}'
+      '{"level":"error","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/error","remoteAddress":"127.0.0.1"},"type":"application","context":"GlobalExceptionFilter","err":{"stack":"STACKTRACE"},"msg":"Error Message!"}'
     );
     expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(app, '/error'))).toBe(
-      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/error"},"type":"access","res":{"statusCode":500},"responseTime":RESPONSE_TIME,"msg":"request errored"}'
+      '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/error","remoteAddress":"127.0.0.1"},"type":"access","res":{"statusCode":500},"responseTime":RESPONSE_TIME,"msg":"request errored"}'
     );
   });
 });
