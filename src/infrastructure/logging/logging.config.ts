@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import * as pino from 'pino';
 import { Params } from 'nestjs-pino';
 import * as os from 'os';
-import { SerializedRequest } from 'pino';
+import { SerializedRequest, SerializedResponse } from 'pino-std-serializers';
 
 export function getLoggingConfig(config: ConfigService): Params {
   return {
@@ -29,7 +29,7 @@ export function getLoggingConfig(config: ConfigService): Params {
 
           return reqLogObj;
         }),
-        res: pino.stdSerializers.wrapResponseSerializer((res) => {
+        res: pino.stdSerializers.wrapResponseSerializer((res: SerializedResponse) => {
           const resLogObj: any = {
             statusCode: res.raw.statusCode
           };
