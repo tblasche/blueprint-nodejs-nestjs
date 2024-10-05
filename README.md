@@ -22,26 +22,29 @@ The service...
 * performs static code analysis via `SonarCloud`
 
 ## Run locally
-* Native. Find API docs at `http://localhost:3000/apidoc`
+* Native: http://localhost:3000/apidoc
   ```console
   npm install
   npm run start:dev
   ```
-* Via Docker. Find API docs at `http://localhost:3000/apidoc`
+* Via Docker: http://localhost:3000/apidoc
   ```console
   docker compose up --build
   ```
+
+## API Docs / Swagger UI
+Find API docs at `/apidoc`
 
 ## Common Actions
 * Install dependencies
   ```console
   npm install
   ```
-* Start application in dev mode and find API docs at `http://localhost:3000/apidoc`
+* Start application in dev mode and find API docs at http://localhost:3000/apidoc
   ```console
   npm run start:dev
   ```
-* Build docker image and run via `docker compose`. Find API docs at `http://localhost:3000/apidoc`
+* Build docker image and run via `docker compose`. Find API docs at http://localhost:3000/apidoc
   ```console
   docker compose up --build
   ```
