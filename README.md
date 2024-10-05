@@ -21,7 +21,18 @@ The service...
 * utilizes `GitHub Actions` for CI/CD
 * performs static code analysis via `SonarCloud`
 
-## Quick Start
+## Run locally
+* Native. Find API docs at `http://localhost:3000/apidoc`
+  ```console
+  npm install
+  npm run start:dev
+  ```
+* Via Docker. Find API docs at `http://localhost:3000/apidoc`
+  ```console
+  docker compose up --build
+  ```
+
+## Common Actions
 * Install dependencies
   ```console
   npm install
@@ -30,7 +41,11 @@ The service...
   ```console
   npm run start:dev
   ```
-* Run tests
+* Build docker image and run via `docker compose`. Find API docs at `http://localhost:3000/apidoc`
+  ```console
+  docker compose up --build
+  ```
+* Run all tests
   ```console
   npm run test
   ```
@@ -41,10 +56,6 @@ The service...
 * Generate Code Coverage Report. HTML Report can be found in `./coverage/lcov-report/index.html`
   ```console
   npm run test:cov
-  ```
-* Build docker image and run via `docker compose`. Find API docs at `http://localhost:3000/apidoc`
-  ```console
-  docker compose up --build
   ```
 * Check for outdated dependencies
   ```console
