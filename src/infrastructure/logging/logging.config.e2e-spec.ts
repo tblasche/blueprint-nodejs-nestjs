@@ -38,9 +38,9 @@ describe('LoggingConfig (e2e)', () => {
 
   beforeAll(async () => {
     await Promise.all([
-      E2eTestApp.init({ customImports: [TestModule] }),
-      E2eTestApp.init({ customImports: [TestModule], config: { LOGGER_LOG_REQUEST_HEADERS: 'true' } }),
-      E2eTestApp.init({ customImports: [TestModule], config: { LOGGER_LOG_RESPONSE_HEADERS: 'true' } })
+      E2eTestApp.start({ customImports: [TestModule] }),
+      E2eTestApp.start({ customImports: [TestModule], config: { LOGGER_LOG_REQUEST_HEADERS: 'true' } }),
+      E2eTestApp.start({ customImports: [TestModule], config: { LOGGER_LOG_RESPONSE_HEADERS: 'true' } })
     ]).then((apps) => {
       app = apps[0];
       appWithLogRequestHeaders = apps[1];

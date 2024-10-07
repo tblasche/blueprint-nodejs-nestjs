@@ -5,7 +5,7 @@ describe('PrismaService (e2e)', () => {
   describe('isConnectedToDatabase()', () => {
     it('should return true when database is connected', async () => {
       // given
-      const app = await E2eTestApp.init();
+      const app = await E2eTestApp.start();
 
       // expect
       expect(await app.getApp().get(PrismaService).isConnectedToDatabase()).toBe(true);
@@ -16,7 +16,7 @@ describe('PrismaService (e2e)', () => {
 
     it('should return false when database is not connected', async () => {
       // given
-      const app = await E2eTestApp.init({ withDatabase: false });
+      const app = await E2eTestApp.start({ withDatabase: false });
 
       // expect
       expect(await app.getApp().get(PrismaService).isConnectedToDatabase()).toBe(false);

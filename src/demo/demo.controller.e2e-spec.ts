@@ -4,7 +4,7 @@ describe('DemoController (e2e)', () => {
   let app: E2eTestApp;
 
   beforeAll(async () => {
-    app = await E2eTestApp.init();
+    app = await E2eTestApp.start();
   });
 
   afterAll(async () => {

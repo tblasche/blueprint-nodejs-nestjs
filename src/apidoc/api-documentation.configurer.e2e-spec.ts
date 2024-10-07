@@ -4,7 +4,7 @@ describe('ApiDocumentationConfigurer (e2e)', () => {
   let app: E2eTestApp;
 
   beforeAll(async () => {
-    app = await E2eTestApp.init({ withDatabase: false, withSwaggerUi: true });
+    app = await E2eTestApp.start({ withDatabase: false, withSwaggerUi: true });
   });
 
   afterAll(async () => {

@@ -40,17 +40,9 @@ export class E2eTestApp {
     this.app = app;
   }
 
-  static async init(options: Partial<Options> = {}): Promise<E2eTestApp> {
+  static async start(options: Partial<Options> = {}): Promise<E2eTestApp> {
     const app = await E2eTestApp.initApp(options);
     return new E2eTestApp(app);
-  }
-
-  getApp(): NestFastifyApplication {
-    return this.app;
-  }
-
-  inject(opts: InjectOptions | string): Promise<LightMyRequestResponse> {
-    return this.app.inject(opts);
   }
 
   async stop(): Promise<void> {
@@ -61,6 +53,14 @@ export class E2eTestApp {
     }
 
     await this.app.close();
+  }
+
+  getApp(): NestFastifyApplication {
+    return this.app;
+  }
+
+  inject(opts: InjectOptions | string): Promise<LightMyRequestResponse> {
+    return this.app.inject(opts);
   }
 
   getAllLogs(): string[] {
@@ -81,6 +81,16 @@ export class E2eTestApp {
     );
   }
 
+  resetDatabase(): void {
+    try {
+      child_process.execSync(
+        `DATABASE_URL=${this.app.get(ConfigService).get<string>('DATABASE_URL')} npx prisma migrate reset --force`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   private getLastLogMessage(logs: string[], match: string): string | undefined {
     if (match) {
       for (const log of logs.reverse()) {
@@ -95,7 +105,7 @@ export class E2eTestApp {
     return logs.at(-1);
   }
 
-  static async initApp(options: Partial<Options> = {}): Promise<NestFastifyApplication> {
+  private static async initApp(options: Partial<Options> = {}): Promise<NestFastifyApplication> {
     const opts = Object.assign({}, this.defaultConfig, options);
     process.env.TESTCONTAINERS_HOST_OVERRIDE = '127.0.0.1';
     const postgresContainer: StartedPostgreSqlContainer | null = opts.withDatabase
@@ -171,16 +181,6 @@ export class E2eTestApp {
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
     return app;
-  }
-
-  static async resetDatabase(app: NestFastifyApplication): Promise<void> {
-    try {
-      child_process.execSync(
-        `DATABASE_URL=${app.get(ConfigService).get<string>('DATABASE_URL')} npx prisma migrate reset --force`
-      );
-    } catch (e) {
-      console.error(e);
-    }
   }
 
   private static async setupDatabase(app: NestFastifyApplication): Promise<void> {

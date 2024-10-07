@@ -4,7 +4,7 @@ describe('MetricsController (e2e)', () => {
   let app: E2eTestApp;
 
   beforeAll(async () => {
-    app = await E2eTestApp.init({ withDatabase: false });
+    app = await E2eTestApp.start({ withDatabase: false });
   });
 
   afterAll(async () => {

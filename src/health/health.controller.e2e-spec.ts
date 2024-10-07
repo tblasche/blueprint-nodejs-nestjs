@@ -4,7 +4,7 @@ describe('HealthController (e2e)', () => {
   let app: E2eTestApp;
 
   beforeAll(async () => {
-    app = await E2eTestApp.init();
+    app = await E2eTestApp.start();
   });
 
   afterAll(async () => {
@@ -33,7 +33,7 @@ describe('HealthController (e2e)', () => {
 
   it('GET /ready should return 503 Service Unavailable with missing database connection', async () => {
     // given
-    const app = await E2eTestApp.init({ withDatabase: false });
+    const app = await E2eTestApp.start({ withDatabase: false });
 
     // when
     const response = await app.inject({ method: 'GET', url: '/ready' });
