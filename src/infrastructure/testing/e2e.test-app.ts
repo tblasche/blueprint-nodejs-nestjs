@@ -13,6 +13,7 @@ import { getLoggingConfig } from '../logging/logging.config';
 import MemoryStream = require('memorystream');
 import { loggerModule } from '../infrastructure.module';
 import { TestHelper } from './test.helper';
+import { InjectOptions, Response as LightMyRequestResponse } from 'light-my-request';
 
 export type Options = {
   requestIdGenerator: (req) => string;
@@ -46,6 +47,10 @@ export class E2eTestApp {
 
   getApp(): NestFastifyApplication {
     return this.app;
+  }
+
+  inject(opts: InjectOptions | string): Promise<LightMyRequestResponse> {
+    return this.app.inject(opts);
   }
 
   async stop(): Promise<void> {

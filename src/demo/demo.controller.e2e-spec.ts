@@ -13,7 +13,7 @@ describe('DemoController (e2e)', () => {
 
   it('GET /api/demos should return 200 OK', async () => {
     // when
-    const response = await app.getApp().inject({ method: 'GET', url: '/api/demos' });
+    const response = await app.inject({ method: 'GET', url: '/api/demos' });
 
     // then
     expect(response.statusCode).toBe(200);
@@ -22,7 +22,7 @@ describe('DemoController (e2e)', () => {
 
   it('POST /api/demos should return 201 Created and create given Demo', async () => {
     // when
-    const response = await app.getApp().inject({
+    const response = await app.inject({
       method: 'POST',
       url: '/api/demos',
       body: {
@@ -44,7 +44,7 @@ describe('DemoController (e2e)', () => {
 
   it('POST /api/demos should return 400 Bad Request on invalid CreateDemoDto', async () => {
     // when
-    const response = await app.getApp().inject({
+    const response = await app.inject({
       method: 'POST',
       url: '/api/demos',
       body: {

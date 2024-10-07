@@ -13,7 +13,7 @@ describe('ApiDocumentationConfigurer (e2e)', () => {
 
   it('should set up Swagger UI', async () => {
     // when
-    const response = await app.getApp().inject({ method: 'GET', url: '/apidoc' });
+    const response = await app.inject({ method: 'GET', url: '/apidoc' });
 
     // then
     expect(response.statusCode).toBe(200);
@@ -24,7 +24,7 @@ describe('ApiDocumentationConfigurer (e2e)', () => {
 
   it('should provide OpenAPI documentation', async () => {
     // when
-    const response = await app.getApp().inject({ method: 'GET', url: '/apidoc-json' });
+    const response = await app.inject({ method: 'GET', url: '/apidoc-json' });
 
     // then
     expect(response.statusCode).toBe(200);

@@ -13,7 +13,7 @@ describe('MetricsController (e2e)', () => {
 
   it('should provide metrics', async () => {
     // when
-    const response = await app.getApp().inject({ method: 'GET', url: '/metrics' });
+    const response = await app.inject({ method: 'GET', url: '/metrics' });
 
     // then
     expect(response.statusCode).toBe(200);

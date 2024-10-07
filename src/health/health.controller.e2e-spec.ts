@@ -13,7 +13,7 @@ describe('HealthController (e2e)', () => {
 
   it('GET /alive should return 200 OK', async () => {
     // when
-    const response = await app.getApp().inject({ method: 'GET', url: '/alive' });
+    const response = await app.inject({ method: 'GET', url: '/alive' });
 
     // then
     expect(response.statusCode).toBe(200);
@@ -22,7 +22,7 @@ describe('HealthController (e2e)', () => {
 
   it('GET /ready should return 200 OK with working database connection', async () => {
     // when
-    const response = await app.getApp().inject({ method: 'GET', url: '/ready' });
+    const response = await app.inject({ method: 'GET', url: '/ready' });
 
     // then
     expect(response.statusCode).toBe(200);
@@ -36,7 +36,7 @@ describe('HealthController (e2e)', () => {
     const app = await E2eTestApp.init({ withDatabase: false });
 
     // when
-    const response = await app.getApp().inject({ method: 'GET', url: '/ready' });
+    const response = await app.inject({ method: 'GET', url: '/ready' });
 
     // then
     expect(response.statusCode).toBe(503);

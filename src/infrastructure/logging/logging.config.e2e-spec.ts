@@ -64,7 +64,7 @@ describe('LoggingConfig (e2e)', () => {
 
   it('should write access log', async () => {
     // when
-    await app.getApp().inject({ method: 'GET', url: '/access-log-200-ok' });
+    await app.inject({ method: 'GET', url: '/access-log-200-ok' });
 
     // then
     expect(simplifyLogMessage(app.getLastAccessLog('/access-log-200-ok'))).toBe(
@@ -74,7 +74,7 @@ describe('LoggingConfig (e2e)', () => {
 
   it('should write application log', async () => {
     // when
-    await app.getApp().inject({ method: 'GET', url: '/application-log-info' });
+    await app.inject({ method: 'GET', url: '/application-log-info' });
 
     // then
     expect(simplifyLogMessage(app.getLastApplicationLog('INFO log message'))).toBe(
@@ -84,7 +84,7 @@ describe('LoggingConfig (e2e)', () => {
 
   it('should add request headers to access logs if configured', async () => {
     // when
-    await appWithLogRequestHeaders.getApp().inject({
+    await appWithLogRequestHeaders.inject({
       method: 'GET',
       url: '/access-log-200-ok'
     });
@@ -97,7 +97,7 @@ describe('LoggingConfig (e2e)', () => {
 
   it('should redact authorization request header in access logs', async () => {
     // when
-    await appWithLogRequestHeaders.getApp().inject({
+    await appWithLogRequestHeaders.inject({
       method: 'GET',
       url: '/access-log-200-ok',
       headers: { 'x-test': 'test', 'authorization': 'Basic test' }
@@ -111,7 +111,7 @@ describe('LoggingConfig (e2e)', () => {
 
   it('should add response headers to access logs if configured', async () => {
     // when
-    await appWithLogResponseHeaders.getApp().inject({
+    await appWithLogResponseHeaders.inject({
       method: 'GET',
       url: '/access-log-200-ok'
     });
@@ -124,7 +124,7 @@ describe('LoggingConfig (e2e)', () => {
 
   it('should not contain err object in access log for HttpException', async () => {
     // when
-    await app.getApp().inject({
+    await app.inject({
       method: 'GET',
       url: '/bad-request-exception'
     });
@@ -138,7 +138,7 @@ describe('LoggingConfig (e2e)', () => {
 
   it('should not contain err.type and err.message in error logs and not contain err object in access logs', async () => {
     // when
-    await app.getApp().inject({
+    await app.inject({
       method: 'GET',
       url: '/error'
     });
