@@ -1,44 +1,50 @@
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { E2eTestHelper } from '../infrastructure/testing/e2e-test.helper';
+import { E2eTestApp } from '../infrastructure/testing/e2e.test-app';
 
 describe('HealthController (e2e)', () => {
-  let app: NestFastifyApplication;
+  let app: E2eTestApp;
 
   beforeAll(async () => {
-    app = await E2eTestHelper.initApp();
+    app = await E2eTestApp.init();
   });
 
   afterAll(async () => {
-    await E2eTestHelper.closeApp(app);
+    await app.stop();
   });
 
-  it('GET /alive should return 200 OK', () => {
-    return app.inject({ method: 'GET', url: '/alive' }).then((result) => {
-      expect(result.statusCode).toBe(200);
-      expect(result.payload).toBe('');
-    });
+  it('GET /alive should return 200 OK', async () => {
+    // when
+    const response = await app.getApp().inject({ method: 'GET', url: '/alive' });
+
+    // then
+    expect(response.statusCode).toBe(200);
+    expect(response.payload).toBe('');
   });
 
-  it('GET /ready should return 200 OK with working database connection', () => {
-    return app.inject({ method: 'GET', url: '/ready' }).then((result) => {
-      expect(result.statusCode).toBe(200);
-      expect(result.json()).toStrictEqual({
-        database: 'UP'
-      });
+  it('GET /ready should return 200 OK with working database connection', async () => {
+    // when
+    const response = await app.getApp().inject({ method: 'GET', url: '/ready' });
+
+    // then
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toStrictEqual({
+      database: 'UP'
     });
   });
 
   it('GET /ready should return 503 Service Unavailable with missing database connection', async () => {
-    const app = await E2eTestHelper.initApp({ withDatabase: false });
+    // given
+    const app = await E2eTestApp.init({ withDatabase: false });
 
-    return app
-      .inject({ method: 'GET', url: '/ready' })
-      .then((result) => {
-        expect(result.statusCode).toBe(503);
-        expect(result.json()).toStrictEqual({
-          database: 'NO CONNECTION'
-        });
-      })
-      .then(async () => await E2eTestHelper.closeApp(app));
+    // when
+    const response = await app.getApp().inject({ method: 'GET', url: '/ready' });
+
+    // then
+    expect(response.statusCode).toBe(503);
+    expect(response.json()).toStrictEqual({
+      database: 'NO CONNECTION'
+    });
+
+    // cleanup
+    await app.stop();
   });
 });

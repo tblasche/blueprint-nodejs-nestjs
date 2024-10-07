@@ -12,6 +12,7 @@ import { Logger, LoggerModule, Params } from 'nestjs-pino';
 import { getLoggingConfig } from '../logging/logging.config';
 import MemoryStream = require('memorystream');
 import { loggerModule } from '../infrastructure.module';
+import { TestHelper } from './test.helper';
 
 export type Options = {
   requestIdGenerator: (req) => string;
@@ -22,7 +23,7 @@ export type Options = {
   config: Record<string, string>;
 };
 
-export class E2eTestHelper {
+export class E2eTestApp {
   private static readonly defaultConfig: Options = {
     requestIdGenerator: () => 'request-id',
     withDatabase: true,
@@ -31,6 +32,63 @@ export class E2eTestHelper {
     customImports: [],
     config: {}
   };
+
+  private readonly app: NestFastifyApplication;
+
+  private constructor(app: NestFastifyApplication) {
+    this.app = app;
+  }
+
+  static async init(options: Partial<Options> = {}): Promise<E2eTestApp> {
+    const app = await E2eTestApp.initApp(options);
+    return new E2eTestApp(app);
+  }
+
+  getApp(): NestFastifyApplication {
+    return this.app;
+  }
+
+  async stop(): Promise<void> {
+    const postgresContainer = this.app.get<StartedPostgreSqlContainer>('E2E_TEST_POSTGRES_CONTAINER');
+
+    if (postgresContainer) {
+      await postgresContainer.stop();
+    }
+
+    await this.app.close();
+  }
+
+  getAllLogs(): string[] {
+    return Array.from(this.app.get('E2E_TEST_LOG_CAPTURE') || []);
+  }
+
+  getLastAccessLog(match?: string): string | undefined {
+    return this.getLastLogMessage(
+      this.getAllLogs().filter((message) => message.includes(',"type":"access",')),
+      match
+    );
+  }
+
+  getLastApplicationLog(match?: string): string | undefined {
+    return this.getLastLogMessage(
+      this.getAllLogs().filter((message) => message.includes(',"type":"application",')),
+      match
+    );
+  }
+
+  private getLastLogMessage(logs: string[], match: string): string | undefined {
+    if (match) {
+      for (const log of logs.reverse()) {
+        if (log.includes(match)) {
+          return log;
+        }
+      }
+
+      return undefined;
+    }
+
+    return logs.at(-1);
+  }
 
   static async initApp(options: Partial<Options> = {}): Promise<NestFastifyApplication> {
     const opts = Object.assign({}, this.defaultConfig, options);
@@ -110,52 +168,6 @@ export class E2eTestHelper {
     return app;
   }
 
-  static async closeApp(app: NestFastifyApplication): Promise<void> {
-    const postgresContainer = app.get<StartedPostgreSqlContainer>('E2E_TEST_POSTGRES_CONTAINER');
-
-    if (postgresContainer) {
-      await postgresContainer.stop();
-    }
-
-    await app.close();
-  }
-
-  static async sleep(ms: number): Promise<void> {
-    await new Promise((resolve) => setTimeout(() => resolve(true), ms));
-  }
-
-  static getLogs(app: NestFastifyApplication): string[] {
-    return Array.from(app.get('E2E_TEST_LOG_CAPTURE') || []);
-  }
-
-  static getLastAccessLog(app: NestFastifyApplication, match?: string): string | undefined {
-    return this.getLastLogMessage(
-      this.getLogs(app).filter((message) => message.includes(',"type":"access",')),
-      match
-    );
-  }
-
-  static getLastApplicationLog(app: NestFastifyApplication, match?: string): string | undefined {
-    return this.getLastLogMessage(
-      this.getLogs(app).filter((message) => message.includes(',"type":"application",')),
-      match
-    );
-  }
-
-  private static getLastLogMessage(logs: string[], match: string): string | undefined {
-    if (match) {
-      for (const log of logs.reverse()) {
-        if (log.includes(match)) {
-          return log;
-        }
-      }
-
-      return undefined;
-    }
-
-    return logs.at(-1);
-  }
-
   static async resetDatabase(app: NestFastifyApplication): Promise<void> {
     try {
       child_process.execSync(
@@ -172,7 +184,7 @@ export class E2eTestHelper {
         break;
       }
 
-      await this.sleep(500);
+      await TestHelper.sleep(500);
     }
 
     try {

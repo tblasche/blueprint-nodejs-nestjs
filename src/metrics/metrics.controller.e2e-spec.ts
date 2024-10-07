@@ -1,23 +1,24 @@
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { E2eTestHelper } from '../infrastructure/testing/e2e-test.helper';
+import { E2eTestApp } from '../infrastructure/testing/e2e.test-app';
 
 describe('MetricsController (e2e)', () => {
-  let app: NestFastifyApplication;
+  let app: E2eTestApp;
 
   beforeAll(async () => {
-    app = await E2eTestHelper.initApp({ withDatabase: false });
+    app = await E2eTestApp.init({ withDatabase: false });
   });
 
   afterAll(async () => {
-    await E2eTestHelper.closeApp(app);
+    await app.stop();
   });
 
-  it('should provide metrics', () => {
-    return app.inject({ method: 'GET', url: '/metrics' }).then((result) => {
-      expect(result.statusCode).toBe(200);
-      expect(result.headers['content-type']).toMatch(/^text\/plain; /);
-      expect(result.headers['content-type']).toContain('charset=utf-8');
-      expect(result.payload).toContain('nodejs_version_info');
-    });
+  it('should provide metrics', async () => {
+    // when
+    const response = await app.getApp().inject({ method: 'GET', url: '/metrics' });
+
+    // then
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['content-type']).toMatch(/^text\/plain; /);
+    expect(response.headers['content-type']).toContain('charset=utf-8');
+    expect(response.payload).toContain('nodejs_version_info');
   });
 });
