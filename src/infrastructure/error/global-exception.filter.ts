@@ -42,14 +42,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   private getErrorMessage(exception, httpStatus: HttpStatus): string {
     if (this.isHttpException(exception)) {
-      return exception.message && exception.message.message ? exception.message.message : exception.message;
+      return exception?.message?.message ? exception.message.message : exception.message;
     }
 
     return HttpStatus[httpStatus];
   }
 
   private logException(exception): void {
-    if (exception && exception.message) {
+    if (exception?.message) {
       this.logger.error(exception.message, exception.stack);
     } else {
       this.logger.error(`Unhandled exception: ${exception}`);

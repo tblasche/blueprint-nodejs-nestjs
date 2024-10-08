@@ -55,9 +55,9 @@ describe('LoggingConfig (e2e)', () => {
   function simplifyLogMessage(logMessage: string | undefined): string | undefined {
     return logMessage
       ? logMessage
-          .replace(/"time":"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z"/, '"time":"TIME"')
+          .replace(/"time":"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z"/, '"time":"TIME"')
           .replace(new RegExp(`"hostname":"${os.hostname()}"`), '"hostname":"HOSTNAME"')
-          .replace(/"responseTime":[0-9]+/, '"responseTime":RESPONSE_TIME')
+          .replace(/"responseTime":\d+/, '"responseTime":RESPONSE_TIME')
           .replace(/"stack":"Error:.*?"/, '"stack":"STACKTRACE"')
       : undefined;
   }

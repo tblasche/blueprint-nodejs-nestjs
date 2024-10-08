@@ -41,7 +41,7 @@ export class E2eTestApp {
   }
 
   static async start(options: Partial<Options> = {}): Promise<E2eTestApp> {
-    const opts = Object.assign({}, this.defaultConfig, options);
+    const opts = { ...this.defaultConfig, ...options };
     process.env.TESTCONTAINERS_HOST_OVERRIDE = '127.0.0.1';
     const postgresContainer: StartedPostgreSqlContainer | null = opts.withDatabase
       ? await new PostgreSqlContainer(opts.postgresImage).start()
@@ -85,7 +85,7 @@ export class E2eTestApp {
             ...opts.config,
             DATABASE_URL: pg
               ? `postgres://${pg.getUsername()}:${pg.getPassword()}@${pg.getHost()}:${pg.getPort()}/${pg.getDatabase()}`
-              : 'postgresql://unknown:unknown@localhost:5432/unknown'
+              : 'postgresql://unknown@localhost:5432/unknown'
           };
 
           return {
@@ -168,7 +168,7 @@ export class E2eTestApp {
 
   private getLastLogMessage(logs: string[], match?: string): string | undefined {
     if (match) {
-      for (const log of logs.reverse()) {
+      for (const log of logs.toReversed()) {
         if (log.includes(match)) {
           return log;
         }
