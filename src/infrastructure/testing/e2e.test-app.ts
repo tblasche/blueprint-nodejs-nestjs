@@ -12,6 +12,8 @@ import { Logger, LoggerModule, Params } from 'nestjs-pino';
 import { getLoggingConfig } from '../logging/logging.config';
 import MemoryStream = require('memorystream');
 import { loggerModule } from '../infrastructure.module';
+import { TestHelper } from './test.helper';
+import { InjectOptions, Response as LightMyRequestResponse } from 'light-my-request';
 
 export type Options = {
   requestIdGenerator: (req) => string;
@@ -22,7 +24,7 @@ export type Options = {
   config: Record<string, string>;
 };
 
-export class E2eTestHelper {
+export class E2eTestApp {
   private static readonly defaultConfig: Options = {
     requestIdGenerator: () => 'request-id',
     withDatabase: true,
@@ -32,7 +34,13 @@ export class E2eTestHelper {
     config: {}
   };
 
-  static async initApp(options: Partial<Options> = {}): Promise<NestFastifyApplication> {
+  private readonly app: NestFastifyApplication;
+
+  private constructor(app: NestFastifyApplication) {
+    this.app = app;
+  }
+
+  static async start(options: Partial<Options> = {}): Promise<E2eTestApp> {
     const opts = Object.assign({}, this.defaultConfig, options);
     process.env.TESTCONTAINERS_HOST_OVERRIDE = '127.0.0.1';
     const postgresContainer: StartedPostgreSqlContainer | null = opts.withDatabase
@@ -101,48 +109,64 @@ export class E2eTestHelper {
       ApiDocumentationConfigurer.configure(app);
     }
 
-    if (opts.withDatabase) {
-      await this.setupDatabase(app);
-    }
-
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
-    return app;
+    const e2eTestApp = new E2eTestApp(app);
+
+    if (opts.withDatabase) {
+      await e2eTestApp.setupDatabase();
+    }
+
+    return e2eTestApp;
   }
 
-  static async closeApp(app: NestFastifyApplication): Promise<void> {
-    const postgresContainer = app.get<StartedPostgreSqlContainer>('E2E_TEST_POSTGRES_CONTAINER');
+  async stop(): Promise<void> {
+    const postgresContainer = this.app.get<StartedPostgreSqlContainer>('E2E_TEST_POSTGRES_CONTAINER');
 
     if (postgresContainer) {
       await postgresContainer.stop();
     }
 
-    await app.close();
+    await this.app.close();
   }
 
-  static async sleep(ms: number): Promise<void> {
-    await new Promise((resolve) => setTimeout(() => resolve(true), ms));
+  getApp(): NestFastifyApplication {
+    return this.app;
   }
 
-  static getLogs(app: NestFastifyApplication): string[] {
-    return Array.from(app.get('E2E_TEST_LOG_CAPTURE') || []);
+  inject(opts: InjectOptions | string): Promise<LightMyRequestResponse> {
+    return this.app.inject(opts);
   }
 
-  static getLastAccessLog(app: NestFastifyApplication, match?: string): string | undefined {
+  getAllLogs(): string[] {
+    return Array.from(this.app.get('E2E_TEST_LOG_CAPTURE') || []);
+  }
+
+  getLastAccessLog(match?: string): string | undefined {
     return this.getLastLogMessage(
-      this.getLogs(app).filter((message) => message.includes(',"type":"access",')),
+      this.getAllLogs().filter((message) => message.includes(',"type":"access",')),
       match
     );
   }
 
-  static getLastApplicationLog(app: NestFastifyApplication, match?: string): string | undefined {
+  getLastApplicationLog(match?: string): string | undefined {
     return this.getLastLogMessage(
-      this.getLogs(app).filter((message) => message.includes(',"type":"application",')),
+      this.getAllLogs().filter((message) => message.includes(',"type":"application",')),
       match
     );
   }
 
-  private static getLastLogMessage(logs: string[], match: string): string | undefined {
+  resetDatabase(): void {
+    try {
+      child_process.execSync(
+        `DATABASE_URL=${this.app.get(ConfigService).get<string>('DATABASE_URL')} npx prisma migrate reset --force`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  private getLastLogMessage(logs: string[], match?: string): string | undefined {
     if (match) {
       for (const log of logs.reverse()) {
         if (log.includes(match)) {
@@ -156,28 +180,12 @@ export class E2eTestHelper {
     return logs.at(-1);
   }
 
-  static async resetDatabase(app: NestFastifyApplication): Promise<void> {
-    try {
-      child_process.execSync(
-        `DATABASE_URL=${app.get(ConfigService).get<string>('DATABASE_URL')} npx prisma migrate reset --force`
-      );
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  private static async setupDatabase(app: NestFastifyApplication): Promise<void> {
-    for (let i = 0; i < 10; i++) {
-      if (await app.get(PrismaService).isConnectedToDatabase()) {
-        break;
-      }
-
-      await this.sleep(500);
-    }
+  private async setupDatabase(): Promise<void> {
+    await TestHelper.waitUntil(() => this.app.get(PrismaService).isConnectedToDatabase());
 
     try {
       child_process.execSync(
-        `DATABASE_URL=${app.get(ConfigService).get<string>('DATABASE_URL')} npx prisma migrate dev`
+        `DATABASE_URL=${this.app.get(ConfigService).get<string>('DATABASE_URL')} npx prisma migrate dev`
       );
     } catch (e) {
       console.error(e);

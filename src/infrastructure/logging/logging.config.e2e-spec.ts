@@ -1,5 +1,4 @@
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { E2eTestHelper } from '../testing/e2e-test.helper';
+import { E2eTestApp } from '../testing/e2e.test-app';
 import { BadRequestException, Controller, Get, Header, Logger, Module } from '@nestjs/common';
 import * as os from 'os';
 
@@ -33,15 +32,15 @@ class TestController {
 class TestModule {}
 
 describe('LoggingConfig (e2e)', () => {
-  let app: NestFastifyApplication;
-  let appWithLogRequestHeaders: NestFastifyApplication;
-  let appWithLogResponseHeaders: NestFastifyApplication;
+  let app: E2eTestApp;
+  let appWithLogRequestHeaders: E2eTestApp;
+  let appWithLogResponseHeaders: E2eTestApp;
 
   beforeAll(async () => {
     await Promise.all([
-      E2eTestHelper.initApp({ customImports: [TestModule] }),
-      E2eTestHelper.initApp({ customImports: [TestModule], config: { LOGGER_LOG_REQUEST_HEADERS: 'true' } }),
-      E2eTestHelper.initApp({ customImports: [TestModule], config: { LOGGER_LOG_RESPONSE_HEADERS: 'true' } })
+      E2eTestApp.start({ customImports: [TestModule] }),
+      E2eTestApp.start({ customImports: [TestModule], config: { LOGGER_LOG_REQUEST_HEADERS: 'true' } }),
+      E2eTestApp.start({ customImports: [TestModule], config: { LOGGER_LOG_RESPONSE_HEADERS: 'true' } })
     ]).then((apps) => {
       app = apps[0];
       appWithLogRequestHeaders = apps[1];
@@ -50,11 +49,7 @@ describe('LoggingConfig (e2e)', () => {
   });
 
   afterAll(async () => {
-    await Promise.all([
-      E2eTestHelper.closeApp(app),
-      E2eTestHelper.closeApp(appWithLogRequestHeaders),
-      E2eTestHelper.closeApp(appWithLogResponseHeaders)
-    ]);
+    await Promise.all([app.stop(), appWithLogRequestHeaders.stop(), appWithLogResponseHeaders.stop()]);
   });
 
   function simplifyLogMessage(logMessage: string | undefined): string | undefined {
@@ -68,93 +63,91 @@ describe('LoggingConfig (e2e)', () => {
   }
 
   it('should write access log', async () => {
-    // given
+    // when
     await app.inject({ method: 'GET', url: '/access-log-200-ok' });
 
-    // expect
-    expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(app, '/access-log-200-ok'))).toBe(
+    // then
+    expect(simplifyLogMessage(app.getLastAccessLog('/access-log-200-ok'))).toBe(
       '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok","remoteAddress":"127.0.0.1"},"type":"access","res":{"statusCode":200},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
     );
   });
 
   it('should write application log', async () => {
-    // given
+    // when
     await app.inject({ method: 'GET', url: '/application-log-info' });
 
-    // expect
-    expect(simplifyLogMessage(E2eTestHelper.getLastApplicationLog(app, 'INFO log message'))).toBe(
+    // then
+    expect(simplifyLogMessage(app.getLastApplicationLog('INFO log message'))).toBe(
       '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/application-log-info","remoteAddress":"127.0.0.1"},"type":"application","context":"TestController","msg":"INFO log message"}'
     );
   });
 
   it('should add request headers to access logs if configured', async () => {
-    // given
+    // when
     await appWithLogRequestHeaders.inject({
       method: 'GET',
       url: '/access-log-200-ok'
     });
 
-    // expect
-    expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(appWithLogRequestHeaders, '/access-log-200-ok'))).toBe(
+    // then
+    expect(simplifyLogMessage(appWithLogRequestHeaders.getLastAccessLog('/access-log-200-ok'))).toBe(
       '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok","remoteAddress":"127.0.0.1","headers":{"user-agent":"lightMyRequest","host":"localhost:80"}},"type":"access","res":{"statusCode":200},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
     );
   });
 
   it('should redact authorization request header in access logs', async () => {
-    // given
+    // when
     await appWithLogRequestHeaders.inject({
       method: 'GET',
       url: '/access-log-200-ok',
       headers: { 'x-test': 'test', 'authorization': 'Basic test' }
     });
 
-    // expect
-    expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(appWithLogRequestHeaders, '/access-log-200-ok'))).toBe(
+    // then
+    expect(simplifyLogMessage(appWithLogRequestHeaders.getLastAccessLog('/access-log-200-ok'))).toBe(
       '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok","remoteAddress":"127.0.0.1","headers":{"x-test":"test","authorization":"***","user-agent":"lightMyRequest","host":"localhost:80"}},"type":"access","res":{"statusCode":200},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
     );
   });
 
   it('should add response headers to access logs if configured', async () => {
-    // given
+    // when
     await appWithLogResponseHeaders.inject({
       method: 'GET',
       url: '/access-log-200-ok'
     });
 
-    // expect
-    expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(appWithLogResponseHeaders, '/access-log-200-ok'))).toBe(
+    // then
+    expect(simplifyLogMessage(appWithLogResponseHeaders.getLastAccessLog('/access-log-200-ok'))).toBe(
       '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/access-log-200-ok","remoteAddress":"127.0.0.1"},"type":"access","res":{"statusCode":200,"headers":{"cache-control":"no-store","content-length":"0"}},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
     );
   });
 
   it('should not contain err object in access log for HttpException', async () => {
-    // given
+    // when
     await app.inject({
       method: 'GET',
       url: '/bad-request-exception'
     });
 
-    // expect
-    expect(
-      simplifyLogMessage(E2eTestHelper.getLastApplicationLog(app, '"url":"/bad-request-exception"'))
-    ).toBeUndefined();
-    expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(app, '/bad-request-exception'))).toBe(
+    // then
+    expect(simplifyLogMessage(app.getLastApplicationLog('"url":"/bad-request-exception"'))).toBeUndefined();
+    expect(simplifyLogMessage(app.getLastAccessLog('/bad-request-exception'))).toBe(
       '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/bad-request-exception","remoteAddress":"127.0.0.1"},"type":"access","res":{"statusCode":400},"responseTime":RESPONSE_TIME,"msg":"request completed"}'
     );
   });
 
   it('should not contain err.type and err.message in error logs and not contain err object in access logs', async () => {
-    // given
+    // when
     await app.inject({
       method: 'GET',
       url: '/error'
     });
 
-    // expect
-    expect(simplifyLogMessage(E2eTestHelper.getLastApplicationLog(app, '/error'))).toBe(
+    // then
+    expect(simplifyLogMessage(app.getLastApplicationLog('/error'))).toBe(
       '{"level":"error","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/error","remoteAddress":"127.0.0.1"},"type":"application","context":"GlobalExceptionFilter","err":{"stack":"STACKTRACE"},"msg":"Error Message!"}'
     );
-    expect(simplifyLogMessage(E2eTestHelper.getLastAccessLog(app, '/error'))).toBe(
+    expect(simplifyLogMessage(app.getLastAccessLog('/error'))).toBe(
       '{"level":"info","time":"TIME","hostname":"HOSTNAME","req":{"id":"request-id","method":"GET","url":"/error","remoteAddress":"127.0.0.1"},"type":"access","res":{"statusCode":500},"responseTime":RESPONSE_TIME,"msg":"request errored"}'
     );
   });

@@ -1,31 +1,34 @@
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { E2eTestHelper } from '../infrastructure/testing/e2e-test.helper';
+import { E2eTestApp } from '../infrastructure/testing/e2e.test-app';
 
 describe('ApiDocumentationConfigurer (e2e)', () => {
-  let app: NestFastifyApplication;
+  let app: E2eTestApp;
 
   beforeAll(async () => {
-    app = await E2eTestHelper.initApp({ withDatabase: false, withSwaggerUi: true });
+    app = await E2eTestApp.start({ withDatabase: false, withSwaggerUi: true });
   });
 
   afterAll(async () => {
-    await E2eTestHelper.closeApp(app);
+    await app.stop();
   });
 
-  it('should set up Swagger UI', () => {
-    return app.inject({ method: 'GET', url: '/apidoc' }).then((result) => {
-      expect(result.statusCode).toBe(200);
-      expect(result.headers['content-type']).toBe('text/html');
-      expect(result.payload).toContain('<title>Swagger UI</title>');
-      expect(result.payload).toContain('<div id="swagger-ui"></div>');
-    });
+  it('should set up Swagger UI', async () => {
+    // when
+    const response = await app.inject({ method: 'GET', url: '/apidoc' });
+
+    // then
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['content-type']).toBe('text/html');
+    expect(response.payload).toContain('<title>Swagger UI</title>');
+    expect(response.payload).toContain('<div id="swagger-ui"></div>');
   });
 
-  it('should provide OpenAPI documentation', () => {
-    return app.inject({ method: 'GET', url: '/apidoc-json' }).then((result) => {
-      expect(result.statusCode).toBe(200);
-      expect(result.headers['content-type']).toBe('application/json; charset=utf-8');
-      expect(JSON.parse(result.payload).openapi).toBe('3.0.0');
-    });
+  it('should provide OpenAPI documentation', async () => {
+    // when
+    const response = await app.inject({ method: 'GET', url: '/apidoc-json' });
+
+    // then
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+    expect(JSON.parse(response.payload).openapi).toBe('3.0.0');
   });
 });

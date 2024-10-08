@@ -1,32 +1,28 @@
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { PrismaService } from './prisma.service';
-import { E2eTestHelper } from '../testing/e2e-test.helper';
+import { E2eTestApp } from '../testing/e2e.test-app';
 
 describe('PrismaService (e2e)', () => {
-  let app: NestFastifyApplication;
-
-  beforeAll(async () => {
-    app = await E2eTestHelper.initApp();
-  });
-
-  afterAll(async () => {
-    await E2eTestHelper.closeApp(app);
-  });
-
   describe('isConnectedToDatabase()', () => {
     it('should return true when database is connected', async () => {
-      expect(await app.get(PrismaService).isConnectedToDatabase()).toBe(true);
+      // given
+      const app = await E2eTestApp.start();
+
+      // expect
+      expect(await app.getApp().get(PrismaService).isConnectedToDatabase()).toBe(true);
+
+      // cleanup
+      await app.stop();
     });
 
     it('should return false when database is not connected', async () => {
       // given
-      const app = await E2eTestHelper.initApp({ withDatabase: false });
+      const app = await E2eTestApp.start({ withDatabase: false });
 
       // expect
-      expect(await app.get(PrismaService).isConnectedToDatabase()).toBe(false);
+      expect(await app.getApp().get(PrismaService).isConnectedToDatabase()).toBe(false);
 
       // cleanup
-      await E2eTestHelper.closeApp(app);
+      await app.stop();
     });
   });
 });
