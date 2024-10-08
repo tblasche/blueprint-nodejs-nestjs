@@ -74,7 +74,13 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage"
+    "coverageDirectory": "../coverage",
+    "coverageReporters": [
+      "clover",
+      "cobertura",
+      "lcov",
+      "text"
+    ]
   },
   "prettier": {
     "printWidth": 120,

@@ -42,7 +42,11 @@ export class E2eTestApp {
 
   static async start(options: Partial<Options> = {}): Promise<E2eTestApp> {
     const opts = { ...this.defaultConfig, ...options };
-    process.env.TESTCONTAINERS_HOST_OVERRIDE = '127.0.0.1';
+
+    if (!process.env.DOCKER_HOST) {
+      process.env.TESTCONTAINERS_HOST_OVERRIDE = '127.0.0.1';
+    }
+
     const postgresContainer: StartedPostgreSqlContainer | null = opts.withDatabase
       ? await new PostgreSqlContainer(opts.postgresImage).start()
       : null;
