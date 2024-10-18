@@ -7,9 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Demo {
-  id          String @id @default(uuid())
-  title       String @db.VarChar(255)
+model demo {
+  id          String   @id @default(uuid())
+  title       String   @db.VarChar(255)
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
