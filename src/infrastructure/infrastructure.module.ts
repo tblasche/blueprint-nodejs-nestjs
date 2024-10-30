@@ -7,6 +7,7 @@ import * as Joi from 'joi';
 import { appConfigValidationSchema } from '../app.config.validation-schema';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './error/global-exception.filter';
+import { HttpService } from './http/http.service';
 
 // create instance of LoggerModule to be able to override it within tests
 // see https://github.com/nestjs/nest/issues/11967
@@ -33,12 +34,13 @@ export const loggerModule = LoggerModule.forRootAsync({
   ],
   providers: [
     ConfigService,
+    HttpService,
     PrismaService,
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter
     }
   ],
-  exports: [PrismaService]
+  exports: [HttpService, PrismaService]
 })
 export class InfrastructureModule {}

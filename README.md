@@ -132,3 +132,23 @@ this.logger.error(e, 'Something bad happened')
    2. Generate migrations: `DATABASE_URL=postgresql://user:pass@localhost:5432/blueprint npx prisma migrate dev`
 4. Commit the newly generated migration scripts in `/prisma/migrations/`
 5. Update DB on all environments via `npx prisma migrate deploy`
+
+### Make HTTP requests
+
+One option to make HTTP calls is to use the `HttpService` from the `InfrastructureModule`:
+
+```typescript
+await httpService
+  .fetch(URL)
+  .then((response) => {/* handle response */})
+  .catch((e) => {/* handle error*/});
+```
+OR
+```typescript
+try {
+  await httpService.fetch(URL);
+  /* handle response */
+} catch (e) {
+  /* handle error*/
+}
+```
