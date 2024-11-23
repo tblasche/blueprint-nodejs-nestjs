@@ -17,11 +17,11 @@
   },
   "dependencies": {
     "@fastify/static": "7.0.4",
-    "@nestjs/common": "10.4.7",
+    "@nestjs/common": "10.4.8",
     "@nestjs/config": "3.3.0",
-    "@nestjs/core": "10.4.7",
-    "@nestjs/platform-fastify": "10.4.7",
-    "@nestjs/swagger": "8.0.5",
+    "@nestjs/core": "10.4.8",
+    "@nestjs/platform-fastify": "10.4.8",
+    "@nestjs/swagger": "8.0.7",
     "@prisma/client": "5.22.0",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.1",
@@ -33,14 +33,14 @@
     "rxjs": "7.8.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "10.4.7",
+    "@nestjs/cli": "10.4.8",
     "@nestjs/schematics": "10.2.3",
-    "@nestjs/testing": "10.4.7",
-    "@testcontainers/postgresql": "10.14.0",
+    "@nestjs/testing": "10.4.8",
+    "@testcontainers/postgresql": "10.15.0",
     "@types/hapi__joi": "17.1.15",
     "@types/jest": "29.5.14",
     "@types/memorystream": "0.3.4",
-    "@types/node": "22.9.0",
+    "@types/node": "22.9.3",
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "7.18.0",
     "eslint": "8.57.1",
@@ -55,7 +55,7 @@
     "ts-loader": "9.5.1",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
-    "typescript": "5.6.3"
+    "typescript": "5.7.2"
   },
   "jest": {
     "moduleFileExtensions": [

@@ -37,14 +37,14 @@ describe('LoggingConfig (e2e)', () => {
   let appWithLogResponseHeaders: E2eTestApp;
 
   beforeAll(async () => {
-    await Promise.all([
-      E2eTestApp.start({ customImports: [TestModule] }),
-      E2eTestApp.start({ customImports: [TestModule], config: { LOGGER_LOG_REQUEST_HEADERS: 'true' } }),
-      E2eTestApp.start({ customImports: [TestModule], config: { LOGGER_LOG_RESPONSE_HEADERS: 'true' } })
-    ]).then((apps) => {
-      app = apps[0];
-      appWithLogRequestHeaders = apps[1];
-      appWithLogResponseHeaders = apps[2];
+    app = await E2eTestApp.start({ customImports: [TestModule] });
+    appWithLogRequestHeaders = await E2eTestApp.start({
+      customImports: [TestModule],
+      config: { LOGGER_LOG_REQUEST_HEADERS: 'true' }
+    });
+    appWithLogResponseHeaders = await E2eTestApp.start({
+      customImports: [TestModule],
+      config: { LOGGER_LOG_RESPONSE_HEADERS: 'true' }
     });
   });
 
