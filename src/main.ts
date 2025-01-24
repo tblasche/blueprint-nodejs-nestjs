@@ -1,4 +1,4 @@
-import crypto = require('crypto');
+import * as crypto from 'crypto';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
@@ -19,6 +19,6 @@ async function bootstrap() {
   app.useLogger(app.get(Logger));
   app.useGlobalPipes(new ValidationPipe());
   ApiDocumentationConfigurer.configure(app);
-  await app.listen(app.get(ConfigService).get<string>('APP_PORT'), '0.0.0.0');
+  await app.listen(app.get(ConfigService).get<string>('APP_PORT')!, '0.0.0.0');
 }
 bootstrap();

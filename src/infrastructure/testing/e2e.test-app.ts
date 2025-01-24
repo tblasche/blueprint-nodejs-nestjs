@@ -10,6 +10,7 @@ import { PrismaService } from '../db/prisma.service';
 import * as process from 'process';
 import { Logger, LoggerModule, Params } from 'nestjs-pino';
 import { getLoggingConfig } from '../logging/logging.config';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 import MemoryStream = require('memorystream');
 import { loggerModule } from '../infrastructure.module';
 import { TestHelper } from './test.helper';
@@ -41,7 +42,7 @@ export class E2eTestApp {
   }
 
   static async start(options: Partial<Options> = {}): Promise<E2eTestApp> {
-    const opts = { ...this.defaultConfig, ...options };
+    const opts: Options = { ...this.defaultConfig, ...options };
 
     if (!process.env.DOCKER_HOST) {
       process.env.TESTCONTAINERS_HOST_OVERRIDE = '127.0.0.1';
@@ -52,10 +53,11 @@ export class E2eTestApp {
       : null;
     const logCapture: string[] = [];
     const memoryStream = new MemoryStream();
-    memoryStream.on('data', (chunk) => logCapture.push(chunk.toString().trimEnd()));
+    memoryStream.on('data', (chunk: string) => logCapture.push(chunk.toString().trimEnd()));
     memoryStream.pipe(process.stdout, { end: false });
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       imports: [...opts.customImports, AppModule],
       providers: [
         {
@@ -74,7 +76,7 @@ export class E2eTestApp {
           inject: [ConfigService],
           useFactory: (config: ConfigService): Params => {
             const loggingConfig = getLoggingConfig(config);
-            // @ts-ignore Inject MemoryStream into config
+            // @ts-expect-error Inject MemoryStream into config
             loggingConfig.pinoHttp.stream = memoryStream;
             return loggingConfig;
           }
@@ -93,8 +95,9 @@ export class E2eTestApp {
           };
 
           return {
-            get: jest.fn((key: string) =>
-              configOverrides.hasOwnProperty(key) ? configOverrides[key] : configService.get(key)
+            get: jest.fn(
+              (key: string) =>
+                (Object.hasOwn(configOverrides, key) ? configOverrides[key] : configService.get(key)) as string
             )
           };
         }

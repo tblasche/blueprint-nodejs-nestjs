@@ -7,7 +7,7 @@ describe('DemoService', () => {
       // given
       const mockPrismaService = {
         demo: { findMany: () => Promise.resolve([]) }
-      } as PrismaService;
+      } as unknown as PrismaService;
       const demoService = new DemoService(mockPrismaService);
 
       // expect
@@ -35,7 +35,7 @@ describe('DemoService', () => {
               }
             ])
         }
-      } as any;
+      } as unknown as PrismaService;
       const demoService = new DemoService(mockPrismaService);
 
       // expect

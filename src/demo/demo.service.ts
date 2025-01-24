@@ -31,7 +31,7 @@ export class DemoService {
     return new DemoDto({
       id: entity.id,
       title: entity.title,
-      description: entity.description,
+      description: entity.description || undefined,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt
     });

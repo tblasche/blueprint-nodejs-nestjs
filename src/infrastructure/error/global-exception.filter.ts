@@ -36,27 +36,25 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       );
   }
 
-  private getResponseStatus(exception): number {
-    return this.isHttpException(exception) ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+  private getResponseStatus(exception: unknown): number {
+    return this.isHttpException(exception)
+      ? (exception as HttpException).getStatus()
+      : HttpStatus.INTERNAL_SERVER_ERROR;
   }
 
-  private getErrorMessage(exception, httpStatus: HttpStatus): string {
-    if (this.isHttpException(exception)) {
-      return exception?.message?.message ? exception.message.message : exception.message;
-    }
-
-    return HttpStatus[httpStatus];
+  private getErrorMessage(exception: unknown, httpStatus: HttpStatus): string {
+    return this.isHttpException(exception) ? (exception as HttpException).message : HttpStatus[httpStatus];
   }
 
-  private logException(exception): void {
-    if (exception?.message) {
+  private logException(exception: unknown): void {
+    if (exception instanceof Error) {
       this.logger.error(exception.message, exception.stack);
     } else {
-      this.logger.error(`Unhandled exception: ${exception}`);
+      this.logger.error(`Unhandled exception: ${String(exception)}`);
     }
   }
 
-  private isHttpException(exception): boolean {
-    return exception instanceof HttpException;
+  private isHttpException(exception: unknown): boolean {
+    return exception != null && exception instanceof HttpException;
   }
 }

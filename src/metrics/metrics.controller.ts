@@ -1,5 +1,5 @@
 import { Controller, Get, Header } from '@nestjs/common';
-import PrometheusClient = require('prom-client');
+import * as PrometheusClient from 'prom-client';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller()

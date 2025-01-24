@@ -96,10 +96,8 @@ describe('HttpService', () => {
     });
 
     it('should handle unreachable URL', async () => {
-      await expect(() => httpService.fetch('http://unknown-host.tld/')).rejects.toThrow(
-        new Error(
-          'Unable to load http://unknown-host.tld/: fetch failed (Error: getaddrinfo ENOTFOUND unknown-host.tld)'
-        )
+      await expect(() => httpService.fetch('xxxx://unknown-host.tld/', {}, 3000)).rejects.toThrow(
+        new Error('Unable to load xxxx://unknown-host.tld/: fetch failed (Error: unknown scheme)')
       );
     });
   });

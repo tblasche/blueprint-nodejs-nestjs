@@ -38,7 +38,7 @@ export class HttpService {
         throw new Error(`Unable to load ${url}: ${requestTimeoutMillis}ms timeout exceeded`);
       }
 
-      throw new Error(`Unable to load ${url}: ${e.message}${e.cause ? ` (${e.cause})` : ''}`);
+      throw new Error(`Unable to load ${url}: ${e.message}${e.cause ? ` (${e.cause as string})` : ''}`);
     }
   }
 }

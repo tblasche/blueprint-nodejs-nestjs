@@ -12,9 +12,8 @@ export class HealthController {
   alive(): void {}
 
   @Get('ready')
-  ready(@Res() res: FastifyReply): void {
-    this.prismaService.isConnectedToDatabase().then((isConnected) => {
-      return isConnected ? res.code(200).send({ database: 'UP' }) : res.code(503).send({ database: 'NO CONNECTION' });
-    });
+  async ready(@Res() res: FastifyReply): Promise<void> {
+    const isConnected = await this.prismaService.isConnectedToDatabase();
+    return isConnected ? res.code(200).send({ database: 'UP' }) : res.code(503).send({ database: 'NO CONNECTION' });
   }
 }
