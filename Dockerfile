@@ -1,11 +1,11 @@
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 COPY . /app
 RUN npm install
 RUN npm run build
 RUN rm -rf node_modules && npm install --omit=dev
 
-FROM node:22-alpine
+FROM node:24-alpine
 WORKDIR /app
 RUN adduser -D appuser && chown -R appuser /app
 COPY --from=builder /app/dist /app/dist

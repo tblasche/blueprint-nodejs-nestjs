@@ -1,13 +1,13 @@
 version: 2
 updates:
-  # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directory: ""/"
     schedule:
       interval: "weekly"
-
-  # Maintain dependencies for npm
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: ""/"
     schedule:
       interval: "monthly"
+    groups:
+      development-dependencies:
+        dependency-type: "development"
