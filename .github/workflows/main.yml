@@ -9,7 +9,7 @@ jobs:
   check_formatting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -23,7 +23,7 @@ jobs:
       matrix:
         node: [20.x, 22.x, 24.x]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
@@ -33,9 +33,10 @@ jobs:
       - run: npm run test:unit
       - run: npm run test:e2e
   coverage_report:
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -56,6 +57,7 @@ jobs:
             -Dsonar.sources=src/
             -Dsonar.coverage.exclusions=src/**/*.spec.ts,src/**/*.e2e-spec.ts
   docker_build_push:
+    if: github.actor != 'dependabot[bot]'
     needs: build_test
     runs-on: ubuntu-latest
     steps:
