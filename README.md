@@ -48,7 +48,7 @@ Find API docs at `/apidoc`
   ```console
   docker compose up --build
   ```
-* Run all tests
+* Run all tests (requires docker for e2e tests)
   ```console
   npm run test
   ```
