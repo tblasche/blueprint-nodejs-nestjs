@@ -24,7 +24,10 @@ The service...
 ## Run locally
 * Native: http://localhost:3000/apidoc
   ```console
+  // install dependencies
   npm install
+  // generate Prisma client
+  npm run build
   npm run start:dev
   ```
 * Via Docker: http://localhost:3000/apidoc
