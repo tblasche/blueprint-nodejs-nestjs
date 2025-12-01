@@ -1,7 +1,7 @@
 {
   "license": "MIT",
   "scripts": {
-    "build": "DATABASE_URL=postgresql://user:pass@localhost:5432/blueprint npx prisma generate && nest build",
+    "build": "DATABASE_URL=postgresql://user:pass@localhost:5432/blueprint_nestjs npx prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

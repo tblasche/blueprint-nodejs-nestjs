@@ -5,13 +5,13 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://user:pass@postgres:5432/blueprint?schema=public
+      DATABASE_URL: postgresql://user:pass@postgres:5432/blueprint_nestjs?schema=public
   migrate-db:
     image: node:22-alpine
     volumes:
       - ./:/app
     environment:
-      DATABASE_URL: postgresql://user:pass@postgres:5432/blueprint?schema=public
+      DATABASE_URL: postgresql://user:pass@postgres:5432/blueprint_nestjs?schema=public
     depends_on:
       - postgres
     entrypoint: [ "sh", "-c", "cd /app && npm install && npx prisma migrate dev"]
@@ -21,13 +21,13 @@ services:
     expose:
       - 5432
     environment:
-      POSTGRES_DB: blueprint
+      POSTGRES_DB: blueprint_nestjs
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d blueprint"]
+      test: ["CMD-SHELL", "pg_isready -U user -d blueprint_nestjs"]
       interval: 2s
       retries: 15
       timeout: 2s
