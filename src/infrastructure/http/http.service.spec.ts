@@ -91,13 +91,13 @@ describe('HttpService', () => {
 
       // expect
       await expect(() => httpService.fetch(serverAddress('/'), {}, 1000)).rejects.toThrow(
-        /Unable to load http:\/\/[^:]+:\d+\/: 1000ms timeout exceeded/
+        /Unable to fetch http:\/\/[^:]+:\d+\/: 1000ms timeout exceeded/
       );
     });
 
     it('should handle unreachable URL', async () => {
       await expect(() => httpService.fetch('xxxx://unknown-host.tld/', {}, 3000)).rejects.toThrow(
-        new Error('Unable to load xxxx://unknown-host.tld/: fetch failed (Error: unknown scheme)')
+        new Error('Unable to fetch xxxx://unknown-host.tld/: fetch failed (Error: unknown scheme)')
       );
     });
   });

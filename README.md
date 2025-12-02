@@ -24,7 +24,13 @@ The service...
 ## Run locally
 * Native: http://localhost:3000/apidoc
   ```console
+  # install dependencies
   npm install
+
+  # generate Prisma client
+  npm run build
+
+  # start app
   npm run start:dev
   ```
 * Via Docker: http://localhost:3000/apidoc
@@ -40,6 +46,10 @@ Find API docs at `/apidoc`
   ```console
   npm install
   ```
+* (Re-)Generate Prisma client (ORM)
+  ```console
+  npm run build
+  ```
 * Start application in dev mode and find API docs at http://localhost:3000/apidoc
   ```console
   npm run start:dev
@@ -51,6 +61,14 @@ Find API docs at `/apidoc`
 * Run all tests (requires docker for e2e tests)
   ```console
   npm run test
+  ```
+* Format files using prettier
+  ```console
+  npm run format
+  ```
+* Check file formatting
+  ```console
+  npm run format:check
   ```
 * Run linting
   ```console
@@ -128,8 +146,8 @@ this.logger.error(e, 'Something bad happened')
 1. Make your schema changes in `/prisma/schema.prisma`. See [Prisma Docs](https://www.prisma.io/docs/orm/prisma-schema/data-model/models)
 2. Make sure you have Prisma installed via running `npm install`
 3. Generate migration scripts in `/prisma/migrations/`
-   1. Start local Postgres via Docker: `docker run --name postgres --rm -e POSTGRES_USER=user -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=blueprint -p 5432:5432 -it postgres:alpine`
-   2. Generate migrations: `DATABASE_URL=postgresql://user:pass@localhost:5432/blueprint npx prisma migrate dev`
+   1. Start local Postgres via Docker: `docker run --name postgres --rm -e POSTGRES_USER=user -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=blueprint_nestjs -p 5432:5432 -it postgres:alpine`
+   2. Generate migrations: `DATABASE_URL=postgresql://user:pass@localhost:5432/blueprint_nestjs npx prisma migrate dev`
 4. Commit the newly generated migration scripts in `/prisma/migrations/`
 5. Update DB on all environments via `npx prisma migrate deploy`
 
@@ -138,15 +156,8 @@ this.logger.error(e, 'Something bad happened')
 One option to make HTTP calls is to use the `HttpService` from the `InfrastructureModule`:
 
 ```typescript
-await httpService
-  .fetch(URL)
-  .then((response) => {/* handle response */})
-  .catch((e) => {/* handle error*/});
-```
-OR
-```typescript
 try {
-  await httpService.fetch(URL);
+  const response = await httpService.fetch(URL);
   /* handle response */
 } catch (e) {
   /* handle error*/

@@ -17,7 +17,7 @@ export class HttpService {
     requestProperties: RequestInit = {},
     requestTimeoutMillis: number = 10000
   ): Promise<Response> {
-    this.logger.debug(`Loading ${url} with timeout ${requestTimeoutMillis}ms`);
+    this.logger.debug(`Fetching ${url} with timeout ${requestTimeoutMillis}ms`);
 
     if (!requestProperties.headers) {
       requestProperties.headers = {};
@@ -35,10 +35,10 @@ export class HttpService {
       const e = error as Error;
 
       if (e.name === 'TimeoutError') {
-        throw new Error(`Unable to load ${url}: ${requestTimeoutMillis}ms timeout exceeded`);
+        throw new Error(`Unable to fetch ${url}: ${requestTimeoutMillis}ms timeout exceeded`);
       }
 
-      throw new Error(`Unable to load ${url}: ${e.message}${e.cause ? ` (${e.cause as string})` : ''}`);
+      throw new Error(`Unable to fetch ${url}: ${e.message}${e.cause ? ` (${e.cause as string})` : ''}`);
     }
   }
 }

@@ -2,25 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { CreateDemoDto } from './create-demo.dto';
 import { PrismaService } from '../infrastructure/db/prisma.service';
 import { DemoDto } from './demo.dto';
-import { demo as DemoEntity } from '@prisma/client';
+import { demo as DemoEntity } from '../infrastructure/db/generated/prisma/client';
 
 @Injectable()
 export class DemoService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  getDemos(): Promise<DemoDto[]> {
-    return this.prismaService.demo.findMany().then((entities: DemoEntity[]) => this.demoEntitiesToDemoDtos(entities));
+  async getDemos(): Promise<DemoDto[]> {
+    const entities = await this.prismaService.demo.findMany();
+    return this.demoEntitiesToDemoDtos(entities);
   }
 
-  createDemo(createDemoDto: CreateDemoDto): Promise<DemoDto> {
-    return this.prismaService.demo
-      .create({
-        data: {
-          title: createDemoDto.title,
-          description: createDemoDto.description
-        }
-      })
-      .then((entity: DemoEntity) => this.demoEntityToDemoDto(entity));
+  async createDemo(createDemoDto: CreateDemoDto): Promise<DemoDto> {
+    const entity = await this.prismaService.demo.create({
+      data: {
+        title: createDemoDto.title,
+        description: createDemoDto.description
+      }
+    });
+    return this.demoEntityToDemoDto(entity);
   }
 
   private demoEntitiesToDemoDtos(entities: DemoEntity[]): DemoDto[] {
