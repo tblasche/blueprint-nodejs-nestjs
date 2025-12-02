@@ -6,19 +6,7 @@ env:
   DOCKER_IMAGE_NAME: tblasche/blueprint-nodejs-nestjs
 
 jobs:
-  check_formatting:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - run: npm run format:check
-      - run: npm run lint
-  build_test:
+  validate:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -31,6 +19,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - run: npm run format:check
+      - run: npm run lint
       - run: npm run test:unit
       - run: npm run test:e2e
   coverage_report:
@@ -43,6 +33,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run build
       - name: Generate coverage report
         run: npm run test:cov
       - name: SonarCloud Scan
@@ -59,7 +50,7 @@ jobs:
             -Dsonar.coverage.exclusions=src/**/*.spec.ts,src/**/*.e2e-spec.ts
   docker_build_push:
     if: github.actor != 'dependabot[bot]'
-    needs: build_test
+    needs: validate
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker Buildx
