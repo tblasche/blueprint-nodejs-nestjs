@@ -1,10 +1,7 @@
 name: CI
-
 on: push
-
 env:
   DOCKER_IMAGE_NAME: tblasche/blueprint-nodejs-nestjs
-
 jobs:
   validate:
     runs-on: ubuntu-latest
