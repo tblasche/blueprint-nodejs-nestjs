@@ -8,19 +8,19 @@ import { demo as DemoEntity } from '../infrastructure/db/generated/prisma/client
 export class DemoService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  getDemos(): Promise<DemoDto[]> {
-    return this.prismaService.demo.findMany().then((entities: DemoEntity[]) => this.demoEntitiesToDemoDtos(entities));
+  async getDemos(): Promise<DemoDto[]> {
+    const entities = await this.prismaService.demo.findMany();
+    return this.demoEntitiesToDemoDtos(entities);
   }
 
-  createDemo(createDemoDto: CreateDemoDto): Promise<DemoDto> {
-    return this.prismaService.demo
-      .create({
-        data: {
-          title: createDemoDto.title,
-          description: createDemoDto.description
-        }
-      })
-      .then((entity: DemoEntity) => this.demoEntityToDemoDto(entity));
+  async createDemo(createDemoDto: CreateDemoDto): Promise<DemoDto> {
+    const entity = await this.prismaService.demo.create({
+      data: {
+        title: createDemoDto.title,
+        description: createDemoDto.description
+      }
+    });
+    return this.demoEntityToDemoDto(entity);
   }
 
   private demoEntitiesToDemoDtos(entities: DemoEntity[]): DemoDto[] {

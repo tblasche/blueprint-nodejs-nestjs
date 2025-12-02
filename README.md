@@ -62,6 +62,14 @@ Find API docs at `/apidoc`
   ```console
   npm run test
   ```
+* Format files using prettier
+  ```console
+  npm run format
+  ```
+* Check file formatting
+  ```console
+  npm run format:check
+  ```
 * Run linting
   ```console
   npm run lint

@@ -3,6 +3,7 @@
   "scripts": {
     "build": "DATABASE_URL=postgresql://user:pass@localhost:5432/blueprint_nestjs npx prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
