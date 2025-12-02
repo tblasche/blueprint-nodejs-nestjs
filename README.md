@@ -156,15 +156,8 @@ this.logger.error(e, 'Something bad happened')
 One option to make HTTP calls is to use the `HttpService` from the `InfrastructureModule`:
 
 ```typescript
-await httpService
-  .fetch(URL)
-  .then((response) => {/* handle response */})
-  .catch((e) => {/* handle error*/});
-```
-OR
-```typescript
 try {
-  await httpService.fetch(URL);
+  const response = await httpService.fetch(URL);
   /* handle response */
 } catch (e) {
   /* handle error*/
