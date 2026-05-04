@@ -35,9 +35,11 @@ export class HttpService {
       const e = error as Error;
 
       if (e.name === 'TimeoutError') {
+        /* eslint-disable-next-line preserve-caught-error */
         throw new Error(`Unable to fetch ${url}: ${requestTimeoutMillis}ms timeout exceeded`);
       }
 
+      /* eslint-disable-next-line preserve-caught-error */
       throw new Error(`Unable to fetch ${url}: ${e.message}${e.cause ? ` (${e.cause as string})` : ''}`);
     }
   }
