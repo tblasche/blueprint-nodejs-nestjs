@@ -22,7 +22,7 @@
     "@nestjs/config": "4.0.4",
     "@nestjs/core": "11.1.19",
     "@nestjs/platform-fastify": "11.1.19",
-    "@nestjs/swagger": "11.4.2",
+    "@nestjs/swagger": "11.4.4",
     "@prisma/adapter-pg": "7.8.0",
     "@prisma/client": "7.8.0",
     "class-transformer": "0.5.1",
