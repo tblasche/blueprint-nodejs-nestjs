@@ -7,7 +7,7 @@ services:
     environment:
       DATABASE_URL: postgresql://user:pass@postgres:5432/blueprint_nestjs?schema=public
   migrate-db:
-    image: node:22-alpine
+    image: node:26-alpine
     volumes:
       - ./:/app
     environment:
