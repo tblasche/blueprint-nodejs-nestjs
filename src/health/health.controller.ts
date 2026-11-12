@@ -1,7 +1,7 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { PrismaService } from '../infrastructure/db/prisma.service';
-import { FastifyReply } from 'fastify';
+import { PrismaService } from '../infrastructure/db/prisma.service.js';
+import type { FastifyReply } from 'fastify';
 
 @Controller()
 @ApiTags('Health')

@@ -1,23 +1,33 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../app.module.js';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as child_process from 'child_process';
-import { ApiDocumentationConfigurer } from '../../apidoc/api-documentation.configurer';
+import { ApiDocumentationConfigurer } from '../../apidoc/api-documentation.configurer.js';
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql';
-import { PrismaService } from '../db/prisma.service';
+import { PrismaService } from '../db/prisma.service.js';
 import * as process from 'process';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { Logger, LoggerModule, Params } from 'nestjs-pino';
-import { getLoggingConfig } from '../logging/logging.config';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-import MemoryStream = require('memorystream');
-import { loggerModule } from '../infrastructure.module';
-import { TestHelper } from './test.helper';
+import { getLoggingConfig } from '../logging/logging.config.js';
+import MemoryStream from 'memorystream';
+import { loggerModule } from '../infrastructure.module.js';
+import { TestHelper } from './test.helper.js';
 import { InjectOptions, Response as LightMyRequestResponse } from 'light-my-request';
 
+// nestjs-pino keeps one process-wide root logger. Without a reset, every app after the first one would log into the
+// stream of the first app. The reset function is meant for tests but not exported, so it is loaded by file path.
+async function resetNestjsPinoRootLogger(): Promise<void> {
+  const packageDir = dirname(createRequire(import.meta.url).resolve('nestjs-pino/package.json'));
+  const { __resetOutOfContextForTests } = await import(pathToFileURL(join(packageDir, 'dist/esm/PinoLogger.js')).href);
+  __resetOutOfContextForTests();
+}
+
 export type Options = {
-  requestIdGenerator: (req) => string;
+  requestIdGenerator: (req: unknown) => string;
   withDatabase: boolean;
   postgresImage: string;
   withSwaggerUi: boolean;
@@ -51,13 +61,14 @@ export class E2eTestApp {
     const postgresContainer: StartedPostgreSqlContainer | null = opts.withDatabase
       ? await new PostgreSqlContainer(opts.postgresImage).start()
       : null;
+    await resetNestjsPinoRootLogger();
+
     const logCapture: string[] = [];
     const memoryStream = new MemoryStream();
     memoryStream.on('data', (chunk: string) => logCapture.push(chunk.toString().trimEnd()));
     memoryStream.pipe(process.stdout, { end: false });
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       imports: [...opts.customImports, AppModule],
       providers: [
         {
@@ -87,7 +98,7 @@ export class E2eTestApp {
         factory: () => {
           const configService = new ConfigService();
           const pg = postgresContainer;
-          const configOverrides = {
+          const configOverrides: Record<string, string> = {
             ...opts.config,
             DATABASE_URL: pg
               ? `postgres://${pg.getUsername()}:${pg.getPassword()}@${pg.getHost()}:${pg.getPort()}/${pg.getDatabase()}`
@@ -95,7 +106,7 @@ export class E2eTestApp {
           };
 
           return {
-            get: jest.fn(
+            get: vi.fn(
               (key: string) =>
                 (Object.hasOwn(configOverrides, key) ? configOverrides[key] : configService.get(key)) as string
             )

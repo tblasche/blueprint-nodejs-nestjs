@@ -1,5 +1,5 @@
 import { ArgumentsHost, BadRequestException, HttpException } from '@nestjs/common';
-import { GlobalExceptionFilter } from './global-exception.filter';
+import { GlobalExceptionFilter } from './global-exception.filter.js';
 
 describe('GlobalExceptionFilter', () => {
   const globalExceptionFilter: GlobalExceptionFilter = new GlobalExceptionFilter();
@@ -9,9 +9,9 @@ describe('GlobalExceptionFilter', () => {
     id: requestIdDummy
   };
   const response = {
-    code: jest.fn().mockReturnThis(),
-    header: jest.fn().mockReturnThis(),
-    send: jest.fn().mockReturnThis()
+    code: vi.fn().mockReturnThis(),
+    header: vi.fn().mockReturnThis(),
+    send: vi.fn().mockReturnThis()
   };
 
   const argumentHost = {
@@ -22,7 +22,7 @@ describe('GlobalExceptionFilter', () => {
   } as ArgumentsHost;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should send response for Error', () => {

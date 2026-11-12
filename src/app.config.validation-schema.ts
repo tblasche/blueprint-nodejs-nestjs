@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 
 export const appConfigValidationSchema = {
   APP_NAME: Joi.string().required().description('Name of the application'),

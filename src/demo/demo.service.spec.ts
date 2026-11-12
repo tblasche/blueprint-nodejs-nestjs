@@ -1,5 +1,5 @@
-import { DemoService } from './demo.service';
-import { PrismaService } from '../infrastructure/db/prisma.service';
+import { DemoService } from './demo.service.js';
+import { PrismaService } from '../infrastructure/db/prisma.service.js';
 
 describe('DemoService', () => {
   describe('getDemos()', () => {

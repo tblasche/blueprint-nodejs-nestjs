@@ -1,5 +1,5 @@
-import { PrismaService } from './prisma.service';
-import { E2eTestApp } from '../testing/e2e.test-app';
+import { PrismaService } from './prisma.service.js';
+import { E2eTestApp } from '../testing/e2e.test-app.js';
 
 describe('PrismaService (e2e)', () => {
   describe('isConnectedToDatabase()', () => {

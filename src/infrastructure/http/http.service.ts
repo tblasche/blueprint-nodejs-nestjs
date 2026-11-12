@@ -19,14 +19,13 @@ export class HttpService {
   ): Promise<Response> {
     this.logger.debug(`Fetching ${url} with timeout ${requestTimeoutMillis}ms`);
 
-    if (!requestProperties.headers) {
-      requestProperties.headers = {};
+    const headers = new Headers(requestProperties.headers);
+
+    if (!headers.has('Accept-Encoding')) {
+      headers.set('Accept-Encoding', 'gzip');
     }
 
-    if (!requestProperties.headers['Accept-Encoding']) {
-      requestProperties.headers['Accept-Encoding'] = 'gzip';
-    }
-
+    requestProperties.headers = headers;
     requestProperties.signal = AbortSignal.timeout(requestTimeoutMillis);
 
     try {
@@ -35,11 +34,9 @@ export class HttpService {
       const e = error as Error;
 
       if (e.name === 'TimeoutError') {
-        /* eslint-disable-next-line preserve-caught-error */
         throw new Error(`Unable to fetch ${url}: ${requestTimeoutMillis}ms timeout exceeded`);
       }
 
-      /* eslint-disable-next-line preserve-caught-error */
       throw new Error(`Unable to fetch ${url}: ${e.message}${e.cause ? ` (${e.cause as string})` : ''}`);
     }
   }

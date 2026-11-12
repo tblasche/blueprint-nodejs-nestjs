@@ -1,4 +1,4 @@
-import { E2eTestApp } from '../testing/e2e.test-app';
+import { E2eTestApp } from '../testing/e2e.test-app.js';
 import { BadRequestException, Controller, Get, Header, Logger, Module } from '@nestjs/common';
 import * as os from 'os';
 
@@ -49,7 +49,7 @@ describe('LoggingConfig (e2e)', () => {
   });
 
   afterAll(async () => {
-    await Promise.all([app.stop(), appWithLogRequestHeaders.stop(), appWithLogResponseHeaders.stop()]);
+    await Promise.all([app, appWithLogRequestHeaders, appWithLogResponseHeaders].map((testApp) => testApp?.stop()));
   });
 
   function simplifyLogMessage(logMessage: string | undefined): string | undefined {

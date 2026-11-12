@@ -1,10 +1,10 @@
-import * as crypto from 'crypto';
+import crypto from 'node:crypto';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
-import { AppModule } from './app.module';
-import { ApiDocumentationConfigurer } from './apidoc/api-documentation.configurer';
+import { AppModule } from './app.module.js';
+import { ApiDocumentationConfigurer } from './apidoc/api-documentation.configurer.js';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
@@ -21,4 +21,4 @@ async function bootstrap() {
   ApiDocumentationConfigurer.configure(app);
   await app.listen(app.get(ConfigService).get<string>('APP_PORT') || 3000, '0.0.0.0');
 }
-bootstrap();
+await bootstrap();

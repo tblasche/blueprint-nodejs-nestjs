@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDemoDto } from './create-demo.dto';
-import { PrismaService } from '../infrastructure/db/prisma.service';
-import { DemoDto } from './demo.dto';
-import { demo as DemoEntity } from '../infrastructure/db/generated/prisma/client';
+import { CreateDemoDto } from './create-demo.dto.js';
+import { PrismaService } from '../infrastructure/db/prisma.service.js';
+import { DemoDto } from './demo.dto.js';
+import { demo as DemoEntity } from '../infrastructure/db/generated/prisma/client.js';
 
 @Injectable()
 export class DemoService {

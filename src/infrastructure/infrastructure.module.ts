@@ -1,13 +1,13 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PrismaService } from './db/prisma.service';
+import { PrismaService } from './db/prisma.service.js';
 import { LoggerModule, Params } from 'nestjs-pino';
-import { getLoggingConfig } from './logging/logging.config';
-import * as Joi from 'joi';
-import { appConfigValidationSchema } from '../app.config.validation-schema';
+import { getLoggingConfig } from './logging/logging.config.js';
+import Joi from 'joi';
+import { appConfigValidationSchema } from '../app.config.validation-schema.js';
 import { APP_FILTER } from '@nestjs/core';
-import { GlobalExceptionFilter } from './error/global-exception.filter';
-import { HttpService } from './http/http.service';
+import { GlobalExceptionFilter } from './error/global-exception.filter.js';
+import { HttpService } from './http/http.service.js';
 
 // create instance of LoggerModule to be able to override it within tests
 // see https://github.com/nestjs/nest/issues/11967
@@ -26,8 +26,10 @@ export const loggerModule = LoggerModule.forRootAsync({
         ...appConfigValidationSchema
       }),
       validationOptions: {
-        allowUnknown: true,
-        abortEarly: false
+        libraryOptions: {
+          allowUnknown: true,
+          abortEarly: false
+        }
       }
     }),
     loggerModule

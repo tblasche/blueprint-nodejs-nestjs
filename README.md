@@ -13,7 +13,7 @@ Blueprint of a NestJS Service with enterprise features like JSON logging, Swagge
 
 The service...
 * is `docker`'ized
-* utilizes `Jest` and `Testcontainers` for unit and integration testing
+* utilizes `Vitest` and `Testcontainers` for unit and integration testing
 * uses `Prisma` ORM for database interaction
 * provides `Prometheus` metrics
 * provides `Swagger UI` and `OpenAPI Specification`

@@ -1,4 +1,4 @@
-import { E2eTestApp } from '../infrastructure/testing/e2e.test-app';
+import { E2eTestApp } from '../infrastructure/testing/e2e.test-app.js';
 
 describe('MetricsController (e2e)', () => {
   let app: E2eTestApp;

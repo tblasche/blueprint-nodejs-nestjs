@@ -1,3 +1,4 @@
+import { RequestMethod } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as pino from 'pino';
 import { Params } from 'nestjs-pino';
@@ -6,6 +7,8 @@ import { SerializedRequest, SerializedResponse } from 'pino-std-serializers';
 
 export function getLoggingConfig(config: ConfigService): Params {
   return {
+    // The default route of nestjs-pino 5 does not match under Nest 12 with Fastify, so no access logs would be written
+    forRoutes: [{ path: '/{*path}', method: RequestMethod.ALL }],
     // @see https://github.com/pinojs/pino/blob/HEAD/docs/api.md#options
     // @see https://github.com/pinojs/pino-http#api
     pinoHttp: {
@@ -36,7 +39,6 @@ export function getLoggingConfig(config: ConfigService): Params {
 
           if (config.get<string>('LOGGER_LOG_RESPONSE_HEADERS') === 'true') {
             // @ts-expect-error .getHeaders() does not exist and .headers works
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             resLogObj.headers = res.raw.headers;
           }
 

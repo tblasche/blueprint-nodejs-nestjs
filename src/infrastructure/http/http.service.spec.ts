@@ -1,6 +1,7 @@
 import Fastify, { FastifyInstance } from 'fastify';
-import { HttpService } from './http.service';
-import { TestHelper } from '../testing/test.helper';
+import { HttpService } from './http.service.js';
+import { TestHelper } from '../testing/test.helper.js';
+import { AddressInfo } from 'node:net';
 
 describe('HttpService', () => {
   const httpService: HttpService = new HttpService();
@@ -18,10 +19,11 @@ describe('HttpService', () => {
 
   function serverAddress(path: string): string {
     if (server) {
-      const address = ['127.0.0.1', '::1'].includes(server.addresses()[0].address)
+      const currentServerAddress = server.addresses()[0] as AddressInfo;
+      const address = ['127.0.0.1', '::1'].includes(currentServerAddress.address)
         ? 'localhost'
-        : server.addresses()[0].address;
-      return `http://${address}:${server.addresses()[0].port}/${path.replace(/^\//, '')}`;
+        : currentServerAddress.address;
+      return `http://${address}:${currentServerAddress.port}/${path.replace(/^\//, '')}`;
     }
 
     return 'undefined';
