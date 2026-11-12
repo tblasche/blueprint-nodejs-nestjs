@@ -62,12 +62,12 @@ describe('HttpService', () => {
       expect(await res.text()).toBe('post-body');
     });
 
-    it('should set Accept-Encoding to gzip', async () => {
+    it('should set Accept-Encoding header', async () => {
       // given
       server = Fastify();
       server.get('/', function (request, reply) {
-        if (request.headers['accept-encoding'] !== 'gzip') {
-          reply.status(500).send('missing accept-encoding=gzip header');
+        if (request.headers['accept-encoding'] !== 'zstd;q=1.0, br;q=0.8, gzip;q=0.6') {
+          reply.status(500).send('unexpected accept-encoding header value');
         } else {
           reply.send('ok');
         }

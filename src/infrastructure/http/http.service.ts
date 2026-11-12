@@ -22,7 +22,7 @@ export class HttpService {
     const headers = new Headers(requestProperties.headers);
 
     if (!headers.has('Accept-Encoding')) {
-      headers.set('Accept-Encoding', 'gzip');
+      headers.set('Accept-Encoding', 'zstd;q=1.0, br;q=0.8, gzip;q=0.6');
     }
 
     requestProperties.headers = headers;
